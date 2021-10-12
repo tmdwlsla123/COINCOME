@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/a"
+        android:enabled="true"
+        android:icon="@drawable/home_24dp"
+        android:title="시세" />
+    <item
+        android:id="@+id/b"
+        android:enabled="true"
+        android:icon="@drawable/calculator"
+        android:title="계산기" />
+    <item
+        android:id="@+id/c"
+        android:enabled="true"
+        android:icon="@drawable/baseline_notifications_active_black_18dp"
+        android:title="공지" />
+    <item
+        android:id="@+id/d"
+        android:enabled="true"
+        android:icon="@drawable/baseline_settings_black_18dp"
+        android:title="환경설정" />
+</menu>
