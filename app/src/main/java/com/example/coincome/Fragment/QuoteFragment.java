@@ -1,12 +1,12 @@
 package com.example.coincome.Fragment;
 
-import android.app.DownloadManager;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,31 +14,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.coincome.Exchange.Exchange;
 import com.example.coincome.R;
 import com.example.coincome.RecyclerView.QuoteAdapter;
 import com.example.coincome.Retrofit2.ApiInterface;
-import com.example.coincome.Retrofit2.CallbackWithRetry;
 import com.example.coincome.Retrofit2.HttpClient;
+
+import com.example.coincome.ViewModel.CoinViewModel;
 import com.example.coincome.WebSocket.WebSocketListener;
-import com.google.gson.Gson;
 
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.WebSocket;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -61,8 +55,18 @@ public class QuoteFragment extends Fragment {
     QuoteAdapter quoteAdapter;
     String upbitSocketUrl = "wss://api.upbit.com/websocket/v1";
     String bithumbSocketUrl = "wss://pubwss.bithumb.com/pub/ws";
-    String coinoneSocketUrl = "wss://api.upbit.com/websocket/v1";
+//    String coinoneSocketUrl = "wss://api.upbit.com/websocket/v1";
     String korbitSocketUrl = "wss://api.upbit.com/websocket/v1";
+
+    CoinViewModel viewModel;
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -79,19 +83,30 @@ public class QuoteFragment extends Fragment {
                 .readTimeout(0, TimeUnit.MILLISECONDS)
                 .build();
 
-
-        Log.d("Socket","Receiving : text");
-
-
-
-
         quoteAdapter = new QuoteAdapter(context);
         listView = rootView.findViewById(R.id.noti_list);
+
+        //뷰모델 객체 생성
+        viewModel = new ViewModelProvider(this).get(CoinViewModel.class);
+        viewModel.getListliveData().observe(getViewLifecycleOwner(), data ->{
+//            quoteAdapter.Add(data);
+//            quoteAdapter.submitList(data);
+
+            quoteAdapter.updateQouteAdapter(data);
+            Log.v("update", String.valueOf(data.size()));
+        });
+        listView.setItemAnimator(null);
         listView.setAdapter(quoteAdapter);
         listView.setLayoutManager(new LinearLayoutManager(context));
+        listView.setHasFixedSize(true);
+        //뷰모델에 옵저버 등록
+
+
+
 
         return rootView;
     }
+
 
     @Override
     public void onDestroy() {

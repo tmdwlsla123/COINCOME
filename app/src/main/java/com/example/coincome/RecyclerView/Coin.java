@@ -1,24 +1,57 @@
 package com.example.coincome.RecyclerView;
 
 public class Coin {
-    public String coin_name;
 
-    public String getCoin_name() {
-        return coin_name;
+
+    public String coinName;
+    public String market;
+    public String coinPrice;
+    public String coinpremium;
+    public String coinDaytoday;
+
+    public String getCoinName() {
+        return coinName;
     }
 
-    public void setCoin_name(String coin_name) {
-        this.coin_name = coin_name;
+    public void setCoinName(String coinName) {
+        this.coinName = coinName;
     }
 
-    public float getCoin_price() {
-        return coin_price;
+    public String getMarket() {
+        return market;
     }
 
-    public void setCoin_price(float coin_price) {
-        this.coin_price = coin_price;
+    public void setMarket(String market) {
+        this.market = market;
     }
 
-    public float coin_price;
+    public String getCoinPrice() {
+        return coinPrice;
+    }
+
+    public void setCoinPrice(String coinPrice) {
+        this.coinPrice = coinPrice;
+    }
+
+    public String getCoinpremium() {
+        return coinpremium;
+    }
+
+    public void setCoinpremium(String coinpremium) {
+        this.coinpremium = coinpremium;
+    }
+
+    public String getCoinDaytoday() {
+        return coinDaytoday;
+    }
+
+    public void setCoinDaytoday(String coinDaytoday) {
+        this.coinDaytoday = coinDaytoday;
+    }
+
+
+
+
+
 
 }

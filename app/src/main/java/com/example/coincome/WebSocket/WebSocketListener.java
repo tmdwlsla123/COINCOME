@@ -8,9 +8,13 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.coincome.Exchange.Exchange;
+import com.example.coincome.RecyclerView.Coin;
 import com.example.coincome.RecyclerView.QuoteAdapter;
+
+import com.example.coincome.ViewModel.CoinRepository;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -20,6 +24,11 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Response;
@@ -27,27 +36,55 @@ import okhttp3.WebSocket;
 import okio.ByteString;
 
 public class WebSocketListener extends okhttp3.WebSocketListener {
+
     Exchange exchange;
     StringBuilder str;
     QuoteAdapter quoteAdapter;
     Context context;
+    CoinRepository coinRepo;
+    ArrayList arrayList;
     public WebSocketListener(Exchange exchange, QuoteAdapter quoteAdapter,Context context) {
     this.exchange = exchange;
     this.quoteAdapter = quoteAdapter;
     this.context = context;
         str = new StringBuilder();
+        coinRepo = CoinRepository.getInstance();
         marketList();
     }
+
     private void marketList(){
-        str.append(exchange.upbit_Market);
+         arrayList = new ArrayList();
+
+         for(int i=0; i<exchange.upbit_Market.length(); i++){
+             try {
+                 arrayList.add(exchange.upbit_Market.getJSONObject(i).getString("cd"));
+                 coinRepo.setCoin(exchange.upbit_Market.getJSONObject(i));
+
+                 //
+                 Coin coin = new Coin();
+                 coin.setMarket(exchange.upbit_Market.getJSONObject(i).getString("cd"));
+                 coin.setCoinName(exchange.upbit_Market.getJSONObject(i).getString("cn"));
+                 coinRepo.add(coin);
+                         //
+             } catch (JSONException e) {
+                 e.printStackTrace();
+             }
+         }
+
+        str.append(arrayList);
     }
+
 
     @Override
     public void onOpen(WebSocket webSocket, Response response) {
-        Log.v("socket", "str"+str);
-        webSocket.send("[{\"ticket\":\"test\"},{\"type\":\"ticker\",\"codes\":"+str+"},{\"format\":\"SIMPLE\"}]");
+        Log.v("socket", "str : "+str);
 
-        webSocket.close(1000, null); //없을 경우 끊임없이 서버와 통신함
+
+
+
+        webSocket.send("[{\"ticket\":\"test\"},{\"type\":\"trade\",\"codes\":"+str+"},{\"format\":\"SIMPLE\"}]");
+
+//        webSocket.close(1000, null); //없을 경우 끊임없이 서버와 통신함
         Log.d("Socket",response.toString());
     }
 
@@ -62,26 +99,27 @@ public class WebSocketListener extends okhttp3.WebSocketListener {
 
         try {
             String str = new String(bytes.toByteArray());
-            Log.v("socket",str);
-            JSONObject jsonObject =   new JSONObject(str);
+            Log.v("bytes",str);
+            JSONObject jsonObject = new JSONObject(str);
             Log.v("socket", "market : " + jsonObject.getString("cd"));
-            Log.v("socket", "현재가 : " + jsonObject.getString("tp"));
-            Log.v("socket", "전일대비 : " + jsonObject.getString("c"));
+            coinRepo.setMerge(jsonObject);
+            Coin coin = new Coin();
+            DecimalFormat df = new DecimalFormat("###,###");
+            if(jsonObject.getInt("tp")>100){
+                coin.setCoinPrice(df.format(jsonObject.getInt("tp")));
+            }else{
+                coin.setCoinPrice(jsonObject.getString("tp"));
+            }
 
-
-            ((Activity) context).runOnUiThread(new Runnable() {
-                @Override public void run() {
-                    quoteAdapter.Add(jsonObject);
-                }
-            });
+            coin.setMarket(jsonObject.getString("cd"));
+            coinRepo.updateList(coin);
 
 
         } catch (JSONException e) {
             e.printStackTrace();
+
         }
-
-
-//        Log.d("Socket","Receiving : bytes" + bytes);
+//        Log.v("retrofit2",coin.getJSONArray().toString());
     }
 
     @Override
@@ -98,17 +136,4 @@ public class WebSocketListener extends okhttp3.WebSocketListener {
     public void onFailure(WebSocket webSocket, Throwable t, @Nullable Response response) {
         Log.d("Socket","Receiving : text" + response);
     }
-    final Handler handler = new Handler()
-
-    {
-
-        public void handleMessage(Message msg)
-
-        {
-
-            // 원래 하고싶었던 일들 (UI변경작업 등...)
-
-        }
-
-    };
 }

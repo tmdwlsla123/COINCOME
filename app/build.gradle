@@ -45,4 +45,10 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'  // String 처리시
     implementation 'com.squareup.okhttp3:okhttp:3.12.12'
 
+    def lifecycle_version = "2.2.0"
+
+    // ViewModel & LiveData
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
+
 }

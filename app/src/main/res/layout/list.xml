@@ -35,8 +35,7 @@
                     android:layout_weight="3"
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
-
-                    android:text="content"
+                    android:text="코인이름"
                     android:textSize="13sp" />
                 <TextView
                     android:id="@+id/coin_price"
@@ -45,16 +44,16 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:gravity="right"
-                    android:text="content"
+                    android:text="가격"
                     android:textSize="13sp" />
                 <TextView
-                    android:id="@+id/coin_rate"
+                    android:id="@+id/coin_daytoday"
                     android:layout_width="0dp"
                     android:layout_weight="1.5"
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:gravity="center"
-                    android:text="content"
+                    android:text="전일대비"
                     android:textSize="13sp" />
 
                 <TextView
@@ -64,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:includeFontPadding="false"
-                    android:text="content"
+                    android:text="프리미엄"
                     android:gravity="center"
                     android:textSize="13sp" />
 

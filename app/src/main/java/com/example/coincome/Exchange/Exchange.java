@@ -9,13 +9,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class Exchange {
-    public ArrayList upbit_Market;
+    public JSONArray upbit_Market;
     public ArrayList bithumb_Market;
     public ArrayList coinone_Market;
     public ArrayList korbit_Market;
     int abc;
     public Exchange(){
-        upbit_Market = new ArrayList();
+        upbit_Market = new JSONArray();
         bithumb_Market = new ArrayList();
         coinone_Market = new ArrayList();
         korbit_Market = new ArrayList();
@@ -23,13 +23,17 @@ public class Exchange {
 
 
 
-        public void Addlist(JSONArray jsonArray,ArrayList exchange){
+        public void Addlist(JSONArray jsonArray,JSONArray exchange){
 
             try {
                 for(int i = 0; i < jsonArray.length(); i++){
                     JSONObject jsonObject =  jsonArray.getJSONObject(i);
                     if(jsonObject.getString("market").contains("KRW")){
-                        exchange.add(jsonObject.getString("market"));
+                        jsonObject.put("cd",jsonObject.getString("market"));
+                        jsonObject.put("cn",jsonObject.getString("korean_name"));
+                        jsonObject.remove("korean_name");
+                        jsonObject.remove("market");
+                        exchange.put(jsonObject);
                     }
                 }
                 Log.v("retrofit2","거래소 : "+exchange);

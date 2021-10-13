@@ -20,52 +20,94 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder> {
     Context context;
+
     JSONArray jsonArray;
+    List<Coin> coinlist;
+    public void submitList(final List<Coin> newList) {
+        if (newList == coinlist) {
+            // nothing to do
+            return;
+        }
+    }
+    public void updateQouteAdapter(List<Coin> coinlist) {
+        final CoinDiffCallback diffCallback = new CoinDiffCallback(this.coinlist, coinlist);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        this.coinlist.clear();
+        this.coinlist.addAll(coinlist);
+        diffResult.dispatchUpdatesTo(this);
+    }
+
     @NonNull
     @Override
     public QuoteAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list, parent, false);
-        QuoteAdapter.ViewHolder holder = new QuoteAdapter.ViewHolder(view,context);
+        QuoteAdapter.ViewHolder holder = new QuoteAdapter.ViewHolder(view, context);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(QuoteAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        final Coin coin = coinlist.get(position);
+//        if(Float.parseFloat(coin.getCoinPrice())>=100){
+//            holder.coin_price.setText(Integer.parseInt(coin.getCoinPrice()));
+//        }else{
+            holder.coin_price.setText(coin.getCoinPrice());
+//        }
+        holder.coin_name.setText(coin.getCoinName());
 
-        try {
-            JSONObject jsonObject = jsonArray.getJSONObject(position);
-            holder.coin_name.setText(jsonObject.getString("cd"));
-                holder.coin_price.setText(jsonObject.getString("tp"));
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
+        super.onBindViewHolder(holder, position, payloads);
 
 
+    }
+
+//    @Override
+//    public void onBindViewHolder(QuoteAdapter.ViewHolder holder, int position) {
+//
+//        final Coin coin = coinlist.get(position);
+//
+//            holder.coin_name.setText(coin.getCoinName());
+//            holder.coin_price.setText(coin.getCoinPrice());
+//
+//
+//    }
 
 
-            Log.v("onBindViewHolder", "onBindViewHolder : "+jsonObject.getString("cd"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
     }
 
     @Override
     public int getItemCount() {
-        return jsonArray.length();
+        return coinlist.size();
     }
-    public QuoteAdapter(Context context){
+
+    public QuoteAdapter(Context context) {
         this.context = context;
+
         jsonArray = new JSONArray();
+       coinlist = new ArrayList<>();
         notifyDataSetChanged();
 
     }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView coin_name;
         TextView coin_price;
-        public ViewHolder(View view,Context context) {
+
+        public ViewHolder(View view, Context context) {
             super(view);
 
             coin_name = view.findViewById(R.id.coin_name);
@@ -73,9 +115,12 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder> 
         }
 
     }
-    public void Add(JSONObject jsonObject){
-        jsonArray.put(jsonObject);
-        notifyDataSetChanged();
+
+    public void Add(List<Coin> coin) {
+//            this.jsonArray = jsonArray;
+        this.coinlist = coin;
+//            notifyDataSetChanged();
     }
 
 }
+
