@@ -40,14 +40,14 @@ public class CoinDiffCallback extends DiffUtil.Callback {
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
 
-        return oldlist.get(oldItemPosition).getCoinPrice()!=newlist.get(newItemPosition).getCoinPrice();
+        return (oldlist.get(oldItemPosition).getCoinPrice()!=newlist.get(newItemPosition).getCoinPrice())||(oldlist.get(oldItemPosition).getCoinOverseasPrice()!=newlist.get(newItemPosition).getCoinOverseasPrice());
 
     }
     @Nullable
     @Override
     public Object getChangePayload(int oldItemPosition, int newItemPosition) {
         // Implement method if you're going to use ItemAnimator
-        Log.v("diffcallback","oldItemPosition : "+oldItemPosition + ",newItemPosition : "+ newItemPosition);
+//        Log.v("diffcallback","oldItemPosition : "+oldItemPosition + ",newItemPosition : "+ newItemPosition);
         return super.getChangePayload(oldItemPosition, newItemPosition);
     }
 

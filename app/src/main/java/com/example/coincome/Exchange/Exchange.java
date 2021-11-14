@@ -2,44 +2,193 @@ package com.example.coincome.Exchange;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Exchange {
-    public JSONArray upbit_Market;
-    public ArrayList bithumb_Market;
-    public ArrayList coinone_Market;
-    public ArrayList korbit_Market;
+    public JSONArray upbitMarket;
+    public JSONArray bithumbMarket;
+    public JSONArray coinoneMarket;
+    public JSONArray korbitMarket;
+    public JSONArray binanceMarket;
     int abc;
     public Exchange(){
-        upbit_Market = new JSONArray();
-        bithumb_Market = new ArrayList();
-        coinone_Market = new ArrayList();
-        korbit_Market = new ArrayList();
+        upbitMarket = new JSONArray();
+        bithumbMarket = new JSONArray();
+        coinoneMarket = new JSONArray();
+        korbitMarket = new JSONArray();
+        binanceMarket = new JSONArray();
     }
 
 
-
-        public void Addlist(JSONArray jsonArray,JSONArray exchange){
+        //심볼 추가
+        public void AddUpbitList(JSONArray jsonArray,JSONArray exchange){
 
             try {
+
                 for(int i = 0; i < jsonArray.length(); i++){
+
                     JSONObject jsonObject =  jsonArray.getJSONObject(i);
                     if(jsonObject.getString("market").contains("KRW")){
-                        jsonObject.put("cd",jsonObject.getString("market"));
-                        jsonObject.put("cn",jsonObject.getString("korean_name"));
-                        jsonObject.remove("korean_name");
-                        jsonObject.remove("market");
-                        exchange.put(jsonObject);
+                        JSONObject upbit = new JSONObject();
+                        upbit.put("cd",jsonObject.getString("market"));
+                        upbit.put("cn",jsonObject.getString("korean_name"));
+//                        upbit.put("atp24h",jsonObject.getString("acc_trade_price_24h"));
+                        exchange.put(upbit);
                     }
                 }
-                Log.v("retrofit2","거래소 : "+exchange);
+
+                Log.v("retrofit2","거래소 : "+exchange.length());
+                Log.v("retrofit2","거래소 : "+exchange.get(0));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
+    }
+    public void AddBithumbList(JSONObject jsonObject,JSONArray exchange){
+
+        try {
+            JSONObject jsonObject1 = new JSONObject(jsonObject.getString("data"));
+            Iterator i = jsonObject1.keys();
+
+            String key;
+            while (i.hasNext()){
+                key = i.next().toString();
+                JSONObject jsonObject2 = new JSONObject(jsonObject1.getString(key));
+                JSONObject bithumb = new JSONObject();
+                if(Character.isUpperCase(key.charAt(0))){
+                    bithumb.put("coinPrice",jsonObject2.getDouble("closing_price"));
+                    bithumb.put("changePrice",Math.abs(jsonObject2.getDouble("closing_price")-jsonObject2.getDouble("prev_closing_price")));
+                    Log.v("빗썸변동금액", String.valueOf(Math.abs(jsonObject2.getDouble("closing_price")-jsonObject2.getDouble("prev_closing_price"))));
+                    String change;
+                    if(jsonObject2.getDouble("closing_price")>jsonObject2.getDouble("prev_closing_price")){
+                        change = "RISE";
+                    }else if(jsonObject2.getDouble("closing_price")<jsonObject2.getDouble("prev_closing_price")){
+                        change = "FALL";
+                    }else{
+                        change = "EVEN";
+                    }
+                    bithumb.put("trade_volume",jsonObject2.getDouble("units_traded"));
+                    bithumb.put("change",change);
+                    bithumb.put("symbol",key+"_KRW");
+                    exchange.put(bithumb);
+                }
+            }
+            Log.v("retrofit2","거래소 : "+exchange.length());
+            Log.v("retrofit2","거래소 : "+exchange.get(0));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+//    해외거래소
+    public void AddBinanceList(Object object,JSONArray exchange,String exchangeName){
+        Log.v("object",object.toString());
+
+        try {
+            String firstChar = object.toString();
+
+
+            if (exchangeName.equals("업비트")) {
+                Log.v("업비트","jsonobject");
+                JSONArray jsonArray = new JSONArray(firstChar);
+                Log.v("object",jsonArray.toString());
+            for(int i = 0; i < jsonArray.length(); i++){
+
+                JSONObject jsonObject =  jsonArray.getJSONObject(i);
+                if(jsonObject.getString("market").contains("KRW")){
+                    JSONObject binance = new JSONObject();
+
+                    int idx = jsonObject.getString("market").indexOf("-");
+                    String market = jsonObject.getString("market").substring(idx+1).toLowerCase()+"usdt@trade";
+                    Log.v("binancesymbol",market);
+                    binance.put("overseas",market);
+                    exchange.put(binance);
+                }
+              }
+            }else if(exchangeName.equals("빗썸")){
+                Log.v("빗썸","jsonobject");
+
+                JSONObject jsonObject = new JSONObject(firstChar);
+                JSONObject jsonObject1 = new JSONObject(jsonObject.getString("data"));
+                Iterator i = jsonObject1.keys();
+                String key;
+                while (i.hasNext()){
+                    key = i.next().toString();
+                    if(Character.isUpperCase(key.charAt(0))){
+                        JSONObject binance = new JSONObject();
+                        String market = key.toLowerCase()+"usdt@trade";
+                        binance.put("overseas",market);
+                        exchange.put(binance);
+                    }
+                }
+                Log.v("retrofit2","거래소 : "+exchange.length());
+            }else if(exchangeName.equals("코빗")){
+                JSONObject jsonObject = new JSONObject(firstChar);
+                Iterator i = jsonObject.keys();
+                String key;
+                int idx;
+                while (i.hasNext()){
+                    key = i.next().toString();
+                    JSONObject binance = new JSONObject();
+                    idx = key.indexOf('_');
+                    String market = key.substring(0,idx)+"usdt@trade";;
+                    Log.v("korbitTobinance",market);
+                    binance.put("overseas",market);
+                    exchange.put(binance);
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+    public void AddKorbitList(JSONObject jsonObject,JSONArray exchange){
+        Iterator i = jsonObject.keys();
+        String key;
+        while (i.hasNext()){
+            try {
+                key =  i.next().toString();
+                JSONObject jsonObject1 = new JSONObject(jsonObject.getString(key));
+                JSONObject korbit = new JSONObject();
+                korbit.put("symbol",key);
+                korbit.put("changePercent",jsonObject1.getDouble("changePercent"));
+                korbit.put("last",jsonObject1.getDouble("last"));
+                korbit.put("open",jsonObject1.getDouble("open"));
+                String change;
+                if(jsonObject1.getDouble("last")>jsonObject1.getDouble("open")){
+                    change = "RISE";
+                }else if(jsonObject1.getDouble("last")<jsonObject1.getDouble("open")){
+                    change = "FALL";
+                }else{
+                    change = "EVEN";
+                }
+                korbit.put("change",change);
+                Log.v("korbit", String.valueOf(jsonObject1.getDouble("last")-jsonObject1.getDouble("open")));
+                korbit.put("changePrice",Math.abs(jsonObject1.getDouble("last")-jsonObject1.getDouble("open")));
+
+                exchange.put(korbit);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+    //거래소 배열 클리어
+    public void ExchangeClear(){
+        upbitMarket = new JSONArray();
+        bithumbMarket = new JSONArray();
+        coinoneMarket = new JSONArray();
+        korbitMarket = new JSONArray();
+        binanceMarket = new JSONArray();
     }
 }

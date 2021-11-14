@@ -14,6 +14,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
 import retrofit2.http.Path;
+import retrofit2.http.Url;
 
 public interface ApiInterface {
 
@@ -28,8 +29,8 @@ public interface ApiInterface {
     // base_url + "api/users" 으로 GET 통신
 
     @Headers({"Accept: application/json", "Content-Type: application/json"})
-    @GET("v1/market/{url}")
-    Call<String> requestGet(@Path("url") String url);   // @Query : url에 쿼리 파라미터 추가, encoded - true
+    @GET()
+    Call<String> requestGet(@Url String url);   // @Query : url에 쿼리 파라미터 추가, encoded - true
     @Headers({"Connection: close"})
     @Multipart
     @POST("{url}")

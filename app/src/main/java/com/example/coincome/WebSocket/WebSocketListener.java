@@ -1,139 +1,244 @@
 package com.example.coincome.WebSocket;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.coincome.Exchange.Exchange;
 import com.example.coincome.RecyclerView.Coin;
 import com.example.coincome.RecyclerView.QuoteAdapter;
 
 import com.example.coincome.ViewModel.CoinRepository;
-import com.google.gson.Gson;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okio.ByteString;
 
+
 public class WebSocketListener extends okhttp3.WebSocketListener {
 
+    Binance binance;
+    Bithumb bithumb;
+    Upbit upbit;
+    Korbit korbit;
     Exchange exchange;
     StringBuilder str;
-    QuoteAdapter quoteAdapter;
+
     Context context;
     CoinRepository coinRepo;
     ArrayList arrayList;
-    public WebSocketListener(Exchange exchange, QuoteAdapter quoteAdapter,Context context) {
-    this.exchange = exchange;
-    this.quoteAdapter = quoteAdapter;
-    this.context = context;
-        str = new StringBuilder();
+    public WebSocket webSocket;
+    public boolean isConnected;
+    String exchangeName;
+//    private static WebSocketListener instance = new WebSocketListener();
+//    private static WebSocketListener instance1 = new WebSocketListener();
+    private static final HashMap<WebsocketType,WebSocketListener> instances = new HashMap<WebsocketType,WebSocketListener>();
+public enum WebsocketType{
+    domestic,
+    overseas
+}
+    private WebSocketListener(Context context) {
+
+        this.context = context;
+
+
         coinRepo = CoinRepository.getInstance();
-        marketList();
+
+        binance = new Binance();
+        upbit = new Upbit();
+        bithumb = new Bithumb();
+        korbit = new Korbit();
+        isConnected = false;
+
+    }
+    public static WebSocketListener getInstance(Exchange exchange,Context context,WebsocketType websocketType){
+        if(instances.get(websocketType) == null){
+            instances.put(websocketType,new WebSocketListener(context));
+        }
+
+        return instances.get(websocketType);
     }
 
-    private void marketList(){
+    private void marketList(String exchangeName){
+    int multiply;
          arrayList = new ArrayList();
+         str = new StringBuilder();
+         if(exchangeName.equals("업비트")){
+             for(int i=0; i<exchange.upbitMarket.length(); i++){
+                 try {
+                     arrayList.add(exchange.upbitMarket.getJSONObject(i).getString("cd"));
 
-         for(int i=0; i<exchange.upbit_Market.length(); i++){
-             try {
-                 arrayList.add(exchange.upbit_Market.getJSONObject(i).getString("cd"));
-                 coinRepo.setCoin(exchange.upbit_Market.getJSONObject(i));
+                     Coin coin = new Coin();
+                     coin.setMarket(exchange.upbitMarket.getJSONObject(i).getString("cd"));
+                     coin.setCoinName(exchange.upbitMarket.getJSONObject(i).getString("cn"));
+//                     coin.setTradeVolume(exchange.upbitMarket.getJSONObject(i).getDouble("atp24h"));
+                     coinRepo.add(coin);
+                     //
+                 } catch (JSONException e) {
+                     e.printStackTrace();
+                 }
+             }
+         }else if(exchangeName.equals("바이낸스")){
 
-                 //
-                 Coin coin = new Coin();
-                 coin.setMarket(exchange.upbit_Market.getJSONObject(i).getString("cd"));
-                 coin.setCoinName(exchange.upbit_Market.getJSONObject(i).getString("cn"));
-                 coinRepo.add(coin);
-                         //
-             } catch (JSONException e) {
-                 e.printStackTrace();
+             for(int i=0; i<exchange.binanceMarket.length(); i++){
+                 try {
+                     arrayList.add("\""+exchange.binanceMarket.getJSONObject(i).getString("overseas")+"\"");
+                     Log.v("overseas",exchange.binanceMarket.getJSONObject(i).getString("overseas"));
+
+                 } catch (JSONException e) {
+                     e.printStackTrace();
+                 }
+             }
+         }else if(exchangeName.equals("빗썸")){
+             for(int i = 0; i < exchange.bithumbMarket.length(); i++){
+
+                 try {
+                     arrayList.add("\""+exchange.bithumbMarket.getJSONObject(i).getString("symbol")+"\"");
+                     Coin coin = new Coin();
+                     String[] array = exchange.bithumbMarket.getJSONObject(i).getString("symbol").replace("_","-").split("-");
+                     String symbolFormat = array[1]+"-"+array[0];
+                     coin.setMarket(symbolFormat);
+                     coin.setCoinName(exchange.bithumbMarket.getJSONObject(i).getString("symbol"));
+                     coin.setCoinPrice(exchange.bithumbMarket.getJSONObject(i).getDouble("coinPrice"));
+                     coin.setCoinChange(exchange.bithumbMarket.getJSONObject(i).getString("change"));
+                     if(coin.getCoinChange().equals("FALL")){
+                          multiply = -1;
+                     }else{
+                          multiply = 1;
+                     }
+                     double daytoday = exchange.bithumbMarket.getJSONObject(i).getDouble("changePrice")/(coin.getCoinPrice()-exchange.bithumbMarket.getJSONObject(i).getDouble("changePrice"));
+                     coin.setCoinDaytoday(daytoday*multiply);
+                     coin.setTradeVolume(exchange.bithumbMarket.getJSONObject(i).getDouble("trade_volume"));
+                     Log.v("bithumb",exchange.bithumbMarket.getJSONObject(i).getString("symbol").replace("_","-"));
+                     coinRepo.add(coin);
+
+                 } catch (JSONException e) {
+                     e.printStackTrace();
+                 }
+
+             }
+         }else if(exchangeName.equals("코빗")){
+             for(int i = 0; i < exchange.korbitMarket.length(); i++){
+                 try {
+                     arrayList.add(exchange.korbitMarket.getJSONObject(i).getString("symbol"));
+                     Coin coin = new Coin();
+                     int idx = exchange.korbitMarket.getJSONObject(i).getString("symbol").indexOf("_");
+                     coin.setMarket("KRW-"+exchange.korbitMarket.getJSONObject(i).getString("symbol").substring(0,idx).toUpperCase());
+                     coin.setCoinName(exchange.korbitMarket.getJSONObject(i).getString("symbol"));
+                     coin.setCoinPrice(exchange.korbitMarket.getJSONObject(i).getDouble("last"));
+                     coin.setCoinChange(exchange.korbitMarket.getJSONObject(i).getString("change"));
+                     if(coin.getCoinChange().equals("FALL")){
+                         multiply = -1;
+                     }else{
+                         multiply = 1;
+                     }
+                     double daytoday = exchange.korbitMarket.getJSONObject(i).getDouble("changePrice")/(coin.getCoinPrice()-exchange.korbitMarket.getJSONObject(i).getDouble("changePrice"));
+                     coin.setCoinDaytoday(daytoday*multiply);
+                     coinRepo.add(coin);
+                 } catch (JSONException e) {
+                     e.printStackTrace();
+                 }
              }
          }
 
-        str.append(arrayList);
-    }
 
+        str.append(arrayList);
+
+        Log.v("socket", "str : append() :"+exchange.upbitMarket.length());
+        Log.v("socket", "str : append() :"+exchangeName.equals("업비트"));
+    }
+    public void addExchangeName(String exchangeName,Exchange exchange){
+    this.exchangeName = exchangeName;
+    this.exchange = exchange;
+    }
 
     @Override
     public void onOpen(WebSocket webSocket, Response response) {
+
+        marketList(exchangeName);
+        Log.v("socket", "str : "+exchangeName);
         Log.v("socket", "str : "+str);
+        Log.v("socket", "str : "+response);
+        this.webSocket = webSocket;
+        if(exchangeName.equals("업비트")){
+            upbit.setSubscribe(webSocket,str);
+        }else if(exchangeName.equals("바이낸스")){
+            binance.setSubscribe(webSocket,str);
+        }else if(exchangeName.equals("빗썸")){
+            bithumb.setSubscribe(webSocket,str);
+        }else if(exchangeName.equals("코빗")){
+            korbit.setSubscribe(webSocket,str);
+        }
 
 
 
 
-        webSocket.send("[{\"ticket\":\"test\"},{\"type\":\"trade\",\"codes\":"+str+"},{\"format\":\"SIMPLE\"}]");
 
+
+
+
+//        webSocket.send(" {\"stream\":\"<!miniTicker@arr>\",\"data\":<rawPayload>}");
 //        webSocket.close(1000, null); //없을 경우 끊임없이 서버와 통신함
-        Log.d("Socket",response.toString());
+//        Log.d("Socket",response.toString());
     }
 
     @Override
     public void onMessage(WebSocket webSocket, String text) {
+        isConnected =true;
+        if(exchangeName.equals("바이낸스")){
 
-        Log.d("Socket","Receiving :"+ text);
+            binance.getBinanceData(text,coinRepo);
+//                    Log.d("Socket","Receiving :"+ text);
+        }else if(exchangeName.equals("빗썸")){
+            bithumb.getBithumbData(text,coinRepo);
+//                    Log.d("Socket","Receiving :"+ text);
+        }else if(exchangeName.equals("코빗")){
+            korbit.getKorbitData(text,coinRepo);
+        }
+
+        Log.d("Socket","Receiving text:"+ text);
+
     }
 
     @Override
     public void onMessage(WebSocket webSocket, ByteString bytes) {
-
-        try {
-            String str = new String(bytes.toByteArray());
-            Log.v("bytes",str);
-            JSONObject jsonObject = new JSONObject(str);
-            Log.v("socket", "market : " + jsonObject.getString("cd"));
-            coinRepo.setMerge(jsonObject);
-            Coin coin = new Coin();
-            DecimalFormat df = new DecimalFormat("###,###");
-            if(jsonObject.getInt("tp")>100){
-                coin.setCoinPrice(df.format(jsonObject.getInt("tp")));
-            }else{
-                coin.setCoinPrice(jsonObject.getString("tp"));
-            }
-
-            coin.setMarket(jsonObject.getString("cd"));
-            coinRepo.updateList(coin);
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-
-        }
-//        Log.v("retrofit2",coin.getJSONArray().toString());
+        isConnected =true;
+        upbit.getUpbitData(bytes,coinRepo);
+        Log.d("Socket","Receiving ByteString:"+ bytes);
     }
 
     @Override
     public void onClosing(WebSocket webSocket, int code, String reason) {
-        Log.d("Socket","Receiving : reason" + reason);
+        Log.d("Socket","onClosing : reason" + reason);
+        Log.d("Socket","onClosing : reason" + exchangeName);
+        isConnected = false;
     }
 
     @Override
     public void onClosed(WebSocket webSocket, int code, String reason) {
-        Log.d("Socket","Receiving : text" + reason);
+        Log.d("Socket","onClosed : text" + reason);
+        Log.d("Socket","onClosed : text" + exchangeName);
+        isConnected = false;
     }
 
     @Override
     public void onFailure(WebSocket webSocket, Throwable t, @Nullable Response response) {
-        Log.d("Socket","Receiving : text" + response);
+        Log.d("Socket","onFailure : text" + response);
+        Log.d("Socket","onFailure : text" + exchangeName);
+        isConnected = false;
     }
+
+
+
 }

@@ -3,16 +3,175 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragment.QuoteFragment">
-
-
-
-
-
-        <include
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            layout="@layout/recyleview" />
+            android:orientation="vertical">
+
+
+        <androidx.appcompat.widget.SearchView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/serach"
+            app:iconifiedByDefault="false"
+            app:queryHint="코인명/심볼을 입력하세요">
+        </androidx.appcompat.widget.SearchView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:background="@drawable/bottom_border">
+
+                        <Spinner
+                            android:id="@+id/domestic_exchange"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:entries="@array/domestic_exchange"
+                            >
+                        </Spinner>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/exchange_12_32"/>
+                        <Spinner
+                            android:id="@+id/overseas_exchange"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:entries="@array/overseas_exchange"
+                            >
+                        </Spinner>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                        <TextView
+                            android:paddingLeft="10dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="USDKRW : "/>
+                        <TextView
+                            android:id="@+id/usdkrw"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""/>
+                </LinearLayout>
+                <LinearLayout
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bottom_border"
+                    >
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+
+                            >
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_weight="3"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center">
+                                        <LinearLayout
+                                            android:layout_width="wrap_content"
+                                            android:id="@+id/name_sort"
+                                            android:layout_height="wrap_content">
+                                                <TextView
+                                                    android:layout_width="wrap_content"
+                                                    android:layout_height="wrap_content"
+                                                    android:textColor="@android:color/black"
+                                                    android:textSize="12sp"
+                                                    android:text="이름"/>
+                                                <ImageView
+                                                    android:layout_width="wrap_content"
+                                                    android:layout_height="wrap_content"
+                                                    android:id="@+id/name_sort_image"
+                                                    android:src="@drawable/sort_up_clip_source"/>
+                                        </LinearLayout>
+                                </LinearLayout>
+
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_weight="3"
+                                    android:gravity="right"
+                                    android:paddingRight="10dp"
+                                    android:layout_height="wrap_content">
+                                        <LinearLayout
+                                            android:layout_width="wrap_content"
+                                            android:id="@+id/price_sort"
+                                            android:layout_height="wrap_content">
+                                        <TextView
+                                            android:layout_width="wrap_content"
+
+                                            android:layout_height="wrap_content"
+                                            android:textColor="@android:color/black"
+                                            android:textSize="12sp"
+                                            android:text="가격"/>
+                                        <ImageView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:id="@+id/price_sort_image"
+                                            android:src="@drawable/sort_up_clip_source"/>
+                                </LinearLayout></LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_weight="2"
+                                    android:gravity="right"
+                                    android:layout_height="wrap_content">
+                                        <LinearLayout
+                                            android:layout_width="wrap_content"
+                                            android:id="@+id/daytoday_sort"
+                                            android:layout_height="wrap_content">
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:textColor="@android:color/black"
+                                            android:textSize="12sp"
+                                            android:text="전일대비"/>
+                                        <ImageView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:id="@+id/daytoday_sort_image"
+                                            android:src="@drawable/sort_up_clip_source"/>
+                                        </LinearLayout>
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_weight="2"
+                                    android:gravity="center"
+                                    android:layout_height="wrap_content">
+                                        <LinearLayout
+                                            android:layout_width="wrap_content"
+                                            android:id="@+id/premium_sort"
+                                            android:layout_height="wrap_content">
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:textColor="@android:color/black"
+                                            android:textSize="12sp"
+                                            android:text="김프"/>
+                                        <ImageView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:id="@+id/premium_sort_image"
+                                            android:src="@drawable/sort_up_clip_source"/>
+                                </LinearLayout>
+                                </LinearLayout>
+                        </LinearLayout>
+                </LinearLayout>
+                <include
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    layout="@layout/recyleview" />
+        </LinearLayout>
+
+
 
 
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="domestic_exchange">
+        <item>업비트</item>
+        <item>빗썸</item>
+        <item>코인원</item>
+        <item>코빗</item>
+    </string-array>
+    <string-array name="overseas_exchange">
+        <item>바이낸스</item>
+    </string-array>
+</resources>

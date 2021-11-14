@@ -28,7 +28,7 @@ public class HttpClient {
                     .build();
 
             Retrofit.Builder builder = new Retrofit.Builder();
-            builder.baseUrl( "https://api.upbit.com/" );//http://ccit2020.cafe24.com:8082/http://10.0.2.2
+            builder.baseUrl("https://api.upbit.com/");//http://ccit2020.cafe24.com:8082/http://10.0.2.2
 //            builder.addConverterFactory( GsonConverterFactory.create() );  // 받아오는 Json 구조의 데이터를 객체 형태로 변환
             builder.addConverterFactory(ScalarsConverterFactory.create());  // String 등 처리시
             builder.client(okHttpClient);
