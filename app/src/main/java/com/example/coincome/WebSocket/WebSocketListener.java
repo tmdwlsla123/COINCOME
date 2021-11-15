@@ -180,7 +180,7 @@ public enum WebsocketType{
         }else if(exchangeName.equals("코빗")){
             korbit.setSubscribe(webSocket,str);
         }
-
+//        webSocket.close(1000,null);
 
 
 

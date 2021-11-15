@@ -3,6 +3,8 @@ package com.example.coincome.RecyclerView;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Debug;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +14,10 @@ import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +31,7 @@ import org.json.JSONObject;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,17 +39,52 @@ import java.util.List;
 public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
     Context context;
 
-
+    final AsyncListDiffer<Coin> differ  = new AsyncListDiffer<Coin>(this,DIFF_CALLBACK);
     List<Coin> coinlist;
 
 
+    public static final DiffUtil.ItemCallback<Coin> DIFF_CALLBACK
+            = new DiffUtil.ItemCallback<Coin>() {
+
+        @Override
+        public boolean areItemsTheSame(
+                @NonNull Coin oldUser, @NonNull Coin newUser) {
+            // User properties may have changed if reloaded from the DB, but ID is fixed
+            Log.v("diffcallback","areItemsTheSame oldItem : "+oldUser + ",newItem : "+ newUser);
+            return oldUser.getMarket() == newUser.getMarket();
+
+        }
+        @Override
+        public boolean areContentsTheSame(
+                @NonNull Coin oldUser, @NonNull Coin newUser) {
+            // NOTE: if you use equals, your object must properly override Object#equals()
+            // Incorrectly returning false here will result in too many animations.
+            Log.v("diffcallback","areContentsTheSame oldItem : "+oldUser + ",newItem : "+ newUser);
+            return oldUser.getCoinPrice()!=newUser.getCoinPrice()||oldUser.getCoinOverseasPrice()!=newUser.getCoinOverseasPrice();
+        }
+
+        @Nullable
+        @Override
+        public Object getChangePayload(@NonNull Coin oldItem, @NonNull Coin newItem) {
+            Log.v("diffcallback","oldItem : "+oldItem + ",newItem : "+ oldItem);
+            return super.getChangePayload(oldItem, newItem);
+        }
+    };
+
     public void updateQouteAdapter(List<Coin> coinlist) {
+
         final CoinDiffCallback diffCallback = new CoinDiffCallback(this.coinlist, coinlist);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
         this.coinlist.clear();
         this.coinlist.addAll(coinlist);
-        diffResult.dispatchUpdatesTo(this);
+        diffResult.dispatchUpdatesTo(QuoteAdapter.this);
+
+
+//        differ.submitList(coinlist);
+
+//
+
 
     }
 
@@ -58,57 +99,64 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final Coin coin = coinlist.get(position);
-        try {
-            if(coin.getCoinPrice()!=null){
-                holder.coin_price.setText(MakePriceFormat(coin.getCoinPrice()));
-            }else{
-                holder.coin_price.setText("");
-            }
-            if(coin.getCoinOverseasPrice()!=null){
-                holder.coin_overseasprice.setText(MakePriceFormat(coin.getCoinOverseasPrice()*CoinRepository.getInstance().getUsdkrw()));
-            }else{
-                holder.coin_overseasprice.setText("");
-            }
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) { }
 
-            holder.coin_name.setText(coin.getCoinName());
-//            Log.v("adapter",coin.getCoinName());
-            String plus;
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
 
-            //전일대비 계산식 (현재가 - 전일종가)/전일 종가 x 100%
-            if(coin.getCoinChange().equals("RISE")){
-                holder.coin_daytoday.setTextColor(Color.parseColor("#ef5350"));
-                holder.coin_price.setTextColor(Color.parseColor("#ef5350"));
-                plus = "+";
-            }else if(coin.getCoinChange().equals("FALL")){
-                holder.coin_daytoday.setTextColor(Color.parseColor("#285ff5"));
-                holder.coin_price.setTextColor(Color.parseColor("#285ff5"));
-                plus = "";
-            }else{
-                //같음
-                plus = "";
-                holder.coin_daytoday.setTextColor(Color.parseColor("#FF000000"));
-                holder.coin_price.setTextColor(Color.parseColor("#FF000000"));
-            }
-//        coin.getCoinOverseasPrice()
-            String daytoday = String.format("%.2f",coin.getCoinDaytoday()*100);
-            holder.coin_symbol.setText("");
-            holder.coin_daytoday.setText(plus+daytoday+"%");
-            if(coin.getCoinPremium()!=null){
-                String plus1;
-                if(coin.getCoinPremium()>0){
-                    plus1 = "+";
-                    holder.coin_premium.setTextColor(Color.parseColor("#26A69A"));
+            super.onBindViewHolder(holder, position, payloads);
+
+                    final Coin coin = coinlist.get(position);
+//            final Coin coin = differ.getCurrentList().get(position);
+            try {
+                if(coin.getCoinPrice()!=null){
+                    holder.coin_price.setText(MakePriceFormat(coin.getCoinPrice()));
                 }else{
-                    plus1 = "";
-                    holder.coin_premium.setTextColor(Color.parseColor("#EF5350"));
+                    holder.coin_price.setText("");
                 }
-                String premium = String.format("%.2f",coin.getCoinPremium());
-                holder.coin_premium.setText(plus1+premium+"%");
-            }else{
-                holder.coin_premium.setText("");
-            }
+                if(coin.getCoinOverseasPrice()!=null){
+                    holder.coin_overseasprice.setText(MakePriceFormat(coin.getCoinOverseasPrice()*CoinRepository.getInstance().getUsdkrw()));
+                }else{
+                    holder.coin_overseasprice.setText("");
+                }
+
+                holder.coin_name.setText(coin.getCoinName());
+//            Log.v("adapter",coin.getCoinName());
+                String plus;
+
+                //전일대비 계산식 (현재가 - 전일종가)/전일 종가 x 100%
+                if(coin.getCoinChange().equals("RISE")){
+                    holder.coin_daytoday.setTextColor(Color.parseColor("#ef5350"));
+                    holder.coin_price.setTextColor(Color.parseColor("#ef5350"));
+                    plus = "+";
+                }else if(coin.getCoinChange().equals("FALL")){
+                    holder.coin_daytoday.setTextColor(Color.parseColor("#285ff5"));
+                    holder.coin_price.setTextColor(Color.parseColor("#285ff5"));
+                    plus = "";
+                }else{
+                    //같음
+                    plus = "";
+                    holder.coin_daytoday.setTextColor(Color.parseColor("#FF000000"));
+                    holder.coin_price.setTextColor(Color.parseColor("#FF000000"));
+                }
+//        coin.getCoinOverseasPrice()
+                String daytoday = String.format("%.2f",coin.getCoinDaytoday()*100);
+                holder.coin_symbol.setText("");
+                holder.coin_daytoday.setText(plus+daytoday+"%");
+                if(coin.getCoinPremium()!=null){
+                    String plus1;
+                    if(coin.getCoinPremium()>0){
+                        plus1 = "+";
+                        holder.coin_premium.setTextColor(Color.parseColor("#26A69A"));
+                    }else{
+                        plus1 = "";
+                        holder.coin_premium.setTextColor(Color.parseColor("#EF5350"));
+                    }
+                    String premium = String.format("%.2f",coin.getCoinPremium());
+                    holder.coin_premium.setText(plus1+premium+"%");
+                }else{
+                    holder.coin_premium.setText("");
+                }
 //            if(CoinRepository.getInstance().getUsdkrw()!=null&&coin.getCoinOverseasPrice()!=null){
 //                double kimp =  (coin.getCoinPrice()-CoinRepository.getInstance().getUsdkrw()*coin.getCoinOverseasPrice());
 //                String premium = String.format("%.2f",(kimp/(coin.getCoinPrice()-kimp))*100);
@@ -120,17 +168,9 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
 //
 //                holder.coin_premium.setText("");
 //            }
-        }catch (Exception e){
+            }catch (Exception e){
 
-        }
-
-
-
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
-        super.onBindViewHolder(holder, position, payloads);
+            }
 
 
     }
@@ -145,6 +185,7 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
 
     @Override
     public int getItemCount() {
+//        return differ.getCurrentList().size();
         return coinlist.size();
     }
 
