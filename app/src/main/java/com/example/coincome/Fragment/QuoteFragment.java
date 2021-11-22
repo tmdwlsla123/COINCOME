@@ -80,7 +80,7 @@ public class QuoteFragment extends Fragment {
     String bithumbRESTApiUri = "https://api.bithumb.com/public/ticker/all/krw";
     String bithumbSocketUri = "wss://pubwss.bithumb.com/pub/ws";
 
-    String coinoneRESTApiUri = "https://api.coinone.co.kr/ticker?currency=ALL";
+    String coinoneRESTApiUri = "https://api.coinone.co.kr/ticker_utc?currency=ALL";
     String coinoneSocketUri = "";
     String coinoneGetCategory = "https://coinone.co.kr/api/talk/get_category_list/";
 
