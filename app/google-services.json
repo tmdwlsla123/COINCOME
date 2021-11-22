@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "736146928538",
+    "firebase_url": "https://coincome-3806f-default-rtdb.firebaseio.com",
+    "project_id": "coincome-3806f",
+    "storage_bucket": "coincome-3806f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:736146928538:android:7e57526f83cbc88e99c023",
+        "android_client_info": {
+          "package_name": "com.example.coincome"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "736146928538-29q777d5bv5ppoivcvdh4vd99ve76jh5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsgCbi8gpAM99LNApBUHNetiqyTCcBqts"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "736146928538-29q777d5bv5ppoivcvdh4vd99ve76jh5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

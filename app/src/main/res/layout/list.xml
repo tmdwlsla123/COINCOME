@@ -6,7 +6,7 @@
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:background="@drawable/bottom_border"
-    android:padding="3dp">
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:text="코인이름"
-                    android:textSize="12sp"
+                    android:textSize="13dp"
                     android:paddingLeft="10dp"/>
                 <TextView
                     android:id="@+id/coin_price"
@@ -49,7 +49,7 @@
                     android:textColor="@android:color/black"
                     android:gravity="right"
                     android:text="가격"
-                    android:textSize="12sp"
+                    android:textSize="13dp"
                     android:paddingRight="25dp"/>
                 <TextView
                     android:id="@+id/coin_daytoday"
@@ -59,7 +59,7 @@
                     android:textColor="@android:color/black"
                     android:gravity="left"
                     android:text="전일대비"
-                    android:textSize="12sp" />
+                    android:textSize="13dp" />
 
                 <TextView
                     android:id="@+id/coin_premium"
@@ -70,7 +70,7 @@
                     android:includeFontPadding="false"
                     android:text="프리미엄"
                     android:gravity="center"
-                    android:textSize="12sp" />
+                    android:textSize="13dp" />
 
 
 
@@ -102,7 +102,7 @@
                     android:gravity="right"
                     android:text="해외가격"
                     android:paddingRight="25dp"
-                    android:textSize="10sp"/>
+                    android:textSize="11dp"/>
                 <View
                     android:layout_width="0dp"
                     android:layout_weight="1.5"

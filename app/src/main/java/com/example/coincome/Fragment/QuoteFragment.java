@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -46,6 +47,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -80,6 +82,7 @@ public class QuoteFragment extends Fragment {
 
     String coinoneRESTApiUri = "https://api.coinone.co.kr/ticker?currency=ALL";
     String coinoneSocketUri = "";
+    String coinoneGetCategory = "https://coinone.co.kr/api/talk/get_category_list/";
 
     String korbitRESTApiUri = "https://api.korbit.co.kr/v1/ticker/detailed/all";
     String korbitSocketUri = "wss://ws.korbit.co.kr/v1/user/push";
@@ -94,6 +97,8 @@ public class QuoteFragment extends Fragment {
     LinearLayout nameSort,priceSort,daytodaySort,premiumSort;
     ImageView nameSortImage,priceSortImage,daytodaySortImage,premiumSortImage;
 
+    boolean shouldStopLoop = false;
+    Handler mHandler = new Handler();;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -125,7 +130,16 @@ public class QuoteFragment extends Fragment {
         daytodaySortImage.setImageLevel(10000);
         premiumSortImage=rootView.findViewById(R.id.premium_sort_image);
         premiumSortImage.setImageLevel(10000);
-
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                requestGetCoinone(coinoneRESTApiUri);
+                Log.v("handlertest", String.valueOf(shouldStopLoop));
+                if (!shouldStopLoop) {
+                    mHandler.postDelayed(this, 1000);
+                }
+            }
+        };
 
         requestGetUSDKRW();
         domesticExchange.setSelection(0);
@@ -135,6 +149,7 @@ public class QuoteFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                     if(!flag.equals(adapterView.getItemAtPosition(i))){
+                        shouldStopLoop = true;
                         flag = adapterView.getItemAtPosition(i).toString();
                         CoinRepository.getInstance().getAllList().clear();
                         exchange.ExchangeClear();
@@ -152,7 +167,8 @@ public class QuoteFragment extends Fragment {
                         }else if(adapterView.getItemAtPosition(i).equals("코빗")){
                             requestGet(korbitSocketUri,korbitRESTApiUri,adapterView.getItemAtPosition(i).toString());
                         }else{
-//                    requestGet(coinoneSocketUri);
+                            shouldStopLoop = false;
+                            mHandler.post(runnable);
                         }
                     }
 
@@ -247,7 +263,7 @@ public class QuoteFragment extends Fragment {
 //        client.connectionPool().evictAll();
         if(domesticListener!=null)domesticListener.webSocket.close(1000,null);
         if(overseasListener!=null)overseasListener.webSocket.close(1000,null);
-
+        shouldStopLoop = true;
 //        if(listener !=null &&  listener.isConnected == true)listener.webSocket.cancel();
 
 
@@ -380,6 +396,27 @@ public class QuoteFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+            }
+            // 통신실패
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.v("retrofit2",String.valueOf("error : "+t.toString()));
+            }
+        });
+    }
+    private void requestGetCoinone(String coinoneRESTApiUri){
+        String url = coinoneRESTApiUri; //ex) 요청하고자 하는 주소가 http://10.0.2.2/login 이면 String url = login 형식으로 적으면 됨
+        api = HttpClient.getRetrofit().create( ApiInterface.class );
+        Call<String> call = api.requestGet(url);
+
+        // 비동기로 백그라운드 쓰레드로 동작
+        call.enqueue(new Callback<String>() {
+            // 통신성공 후
+            @Override
+            public void onResponse(Call<String> call, retrofit2.Response<String> response) {
+
+                exchange.AddCoinoneList(response.body());
 
             }
             // 통신실패

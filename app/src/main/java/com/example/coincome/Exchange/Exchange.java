@@ -2,6 +2,8 @@ package com.example.coincome.Exchange;
 
 import android.util.Log;
 
+import com.example.coincome.RecyclerView.Coin;
+import com.example.coincome.ViewModel.CoinRepository;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -182,6 +184,88 @@ public class Exchange {
             }
 
         }
+    }
+    public void AddCoinoneList(String response){
+        try {
+            int multiply = 1;
+            JSONObject jsonObject  = new JSONObject(response);
+            Iterator i = jsonObject.keys();
+            String key;
+            Log.v("coinone", String.valueOf(CoinRepository.getInstance().getAllList()));
+            Log.v("coinone", String.valueOf(jsonObject));
+            if(CoinRepository.getInstance().getAllList().isEmpty()){
+            while(i.hasNext()){
+
+                key = i.next().toString();
+                if(!(key.equals("result") ^ key.equals("errorCode") ^ key.equals("timestamp"))){
+//                           코인 이름 영문 ex) xec doge
+                    String coinName = jsonObject.getJSONObject(key).getString("currency");
+                    Double coinPrice = jsonObject.getJSONObject(key).getDouble("last");
+                    Double coinChange = jsonObject.getJSONObject(key).getDouble("yesterday_last");
+
+//                            String coinName = jsonObject.getJSONObject(key).getString("currency");
+//                            String coinName = jsonObject.getJSONObject(key).getString("currency");
+//                            String coinName = jsonObject.getJSONObject(key).getString("currency");
+                    String change;
+                    if(coinPrice>coinChange){
+                        change = "RISE";
+                        multiply = 1;
+                    }else if(coinPrice<coinChange){
+                        change = "FALL";
+                        multiply = -1;
+                    }else{
+                        change = "EVEN";
+                        multiply = 1;
+                    }
+                    double daytoday = Math.abs(coinPrice-coinChange);
+                    Coin coin = new Coin();
+                    coin.setCoinPrice(coinPrice);
+                    coin.setCoinName(coinName);
+                    coin.setCoinDaytoday((daytoday/(coinPrice-daytoday))*multiply);
+                    coin.setCoinChange(change);
+                    coin.setMarket(coinName);
+                    CoinRepository.getInstance().add(coin);
+
+                    }
+
+                }
+                CoinRepository.getInstance().getListliveData().postValue(CoinRepository.getInstance().getAllList());
+            }else{
+                while(i.hasNext()){
+                    key = i.next().toString();
+                    if(!(key.equals("result") ^ key.equals("errorCode") ^ key.equals("timestamp"))){
+//                           코인 이름 영문 ex) xec doge
+                        String coinName = jsonObject.getJSONObject(key).getString("currency");
+                        Double coinPrice = jsonObject.getJSONObject(key).getDouble("last");
+                        Double coinChange = jsonObject.getJSONObject(key).getDouble("yesterday_last");
+                        String change;
+                        if(coinPrice>coinChange){
+                            change = "RISE";
+                            multiply = 1;
+                        }else if(coinPrice<coinChange){
+                            change = "FALL";
+                            multiply = -1;
+                        }else{
+                            change = "EVEN";
+                            multiply = 1;
+                        }
+                        double daytoday = Math.abs(coinPrice-coinChange);
+                        Coin coin = new Coin();
+                        coin.setCoinPrice(coinPrice);
+                        coin.setCoinName(coinName);
+                        coin.setCoinDaytoday((daytoday/(coinPrice-daytoday))*multiply);
+                        coin.setCoinChange(change);
+                        coin.setMarket(coinName);
+                        CoinRepository.getInstance().updateList(coin);
+                    }
+
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
     //거래소 배열 클리어
     public void ExchangeClear(){
