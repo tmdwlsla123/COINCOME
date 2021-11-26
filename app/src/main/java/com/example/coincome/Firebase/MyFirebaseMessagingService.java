@@ -95,7 +95,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         } else {
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this, "")
-//                            .setSmallIcon(R.drawable.maindriver)
+                            .setSmallIcon(R.mipmap.ic_launcher)
                             .setContentTitle(title)
                             .setAutoCancel(true)
                             .setColor(Color.parseColor("#0ec874")) // 푸시 색상

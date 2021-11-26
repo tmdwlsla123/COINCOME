@@ -107,6 +107,7 @@ public class QuoteFragment extends Fragment {
     ImageView nameSortImage,priceSortImage,daytodaySortImage,premiumSortImage;
 
     boolean shouldStopLoop = false;
+    boolean retrofitFlag;
     Handler mHandler = new Handler();
     ToggleSwitch multipleToggleSwitch;
     String spinnerName;
@@ -134,8 +135,7 @@ public class QuoteFragment extends Fragment {
         overseasExchange = rootView.findViewById(R.id.overseas_exchange);
         multipleToggleSwitch = rootView.findViewById(R.id.tab_switch);
         multipleToggleSwitch.setCheckedPosition(0);
-
-
+        retrofitFlag = false;
         multipleToggleSwitch.setOnChangeListener(new ToggleSwitch.OnChangeListener() {
             @Override
             public void onToggleSwitchChanged(int i) {
@@ -214,19 +214,9 @@ public class QuoteFragment extends Fragment {
         });
 
         exchange = new Exchange();
-
-
-
-
-
         client = new OkHttpClient.Builder()
                 .readTimeout(0, TimeUnit.MILLISECONDS)
                 .build();
-
-        //
-
-
-
         quoteAdapter = new QuoteAdapter(context);
         listView = rootView.findViewById(R.id.noti_list);
 //        quoteAdapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY);
@@ -292,7 +282,7 @@ public class QuoteFragment extends Fragment {
         super.onDestroy();
 //        client.dispatcher().executorService().shutdown();
 //        client.connectionPool().evictAll();
-
+        retrofitFlag=true;
         if(domesticListener!=null)domesticListener.webSocket.close(1000,null);
         if(overseasListener!=null)overseasListener.webSocket.close(1000,null);
         shouldStopLoop = true;
@@ -405,6 +395,9 @@ public class QuoteFragment extends Fragment {
                 Log.v("retrofit2",String.valueOf("error : "+t.toString()));
             }
         });
+        if(retrofitFlag==true){
+            call.cancel();
+        }
     }
     public void requestGetUSDKRW() {
         String url = "all"; //ex) 요청하고자 하는 주소가 http://10.0.2.2/login 이면 String url = login 형식으로 적으면 됨
@@ -436,6 +429,7 @@ public class QuoteFragment extends Fragment {
                 Log.v("retrofit2",String.valueOf("error : "+t.toString()));
             }
         });
+
     }
     private void requestGetCoinone(String coinoneRESTApiUri){
         String url = coinoneRESTApiUri; //ex) 요청하고자 하는 주소가 http://10.0.2.2/login 이면 String url = login 형식으로 적으면 됨
@@ -448,7 +442,18 @@ public class QuoteFragment extends Fragment {
             @Override
             public void onResponse(Call<String> call, retrofit2.Response<String> response) {
 
-                exchange.AddCoinoneList(response.body());
+                exchange.AddCoinoneList(response.body(),request,overseasListener,client,binanceSocketUri,context);
+
+//                request = new Request.Builder()
+//                        .url(binanceSocketUri)
+//                        .build();
+////
+//
+//                overseasListener = WebSocketListener.getInstance(exchange,context, WebSocketListener.WebsocketType.overseas);
+//                overseasListener.addExchangeName("바이낸스",binanceMarket);
+//                client.newWebSocket(request, overseasListener);
+
+
 
             }
             // 통신실패
@@ -457,6 +462,9 @@ public class QuoteFragment extends Fragment {
                 Log.v("retrofit2",String.valueOf("error : "+t.toString()));
             }
         });
+        if(shouldStopLoop==true){
+            call.cancel();
+        }
     }
 
 }

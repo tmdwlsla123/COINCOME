@@ -1,10 +1,13 @@
 package com.example.coincome.Exchange;
 
+import android.app.DownloadManager;
+import android.content.Context;
 import android.util.Log;
 
 import com.example.coincome.RecyclerView.Coin;
 import com.example.coincome.Room.RoomDB;
 import com.example.coincome.ViewModel.CoinRepository;
+import com.example.coincome.WebSocket.WebSocketListener;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -14,6 +17,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 public class Exchange {
     public JSONArray upbitMarket;
@@ -149,6 +155,8 @@ public class Exchange {
                     binance.put("overseas",market);
                     exchange.put(binance);
                 }
+            }else{
+
             }
 
         } catch (JSONException e) {
@@ -187,19 +195,25 @@ public class Exchange {
 
         }
     }
-    public void AddCoinoneList(String response){
+    public void AddCoinoneList(String response, Request request, WebSocketListener overseasListener, OkHttpClient client, String binanceSocketUri, Context context){
+
+
+
         try {
             int multiply = 1;
             JSONObject jsonObject  = new JSONObject(response);
+
             Iterator i = jsonObject.keys();
             String key;
             Log.v("coinone", String.valueOf(CoinRepository.getInstance().getAllList()));
             Log.v("coinone", String.valueOf(jsonObject));
             if(CoinRepository.getInstance().getAllList().isEmpty()){
+
             while(i.hasNext()){
 
                 key = i.next().toString();
                 if(!(key.equals("result") ^ key.equals("errorCode") ^ key.equals("timestamp"))){
+                    JSONObject jsonObject1 = new JSONObject();
 //                           코인 이름 영문 ex) xec doge
                     String coinName = jsonObject.getJSONObject(key).getString("currency");
                     Double coinPrice = jsonObject.getJSONObject(key).getDouble("last");
@@ -227,13 +241,23 @@ public class Exchange {
                     coin.setCoinChange(change);
                     coin.setMarket(coinName.toUpperCase()+"-KRW");
                     coin.setSymbol(coinName.toUpperCase());
+                    jsonObject1.put("overseas",coinName+"usdt@trade");
 //                    coin.setChecked(RoomDB.getDatabase(context).DatabaseDao().favoriteExist(coinName.toUpperCase(),"coinone"));
                     CoinRepository.getInstance().add(coin);
-
+                    binanceMarket.put(jsonObject1);
                     }
 
                 }
+
+                AddBinanceList(jsonObject,binanceMarket,"코인원");
                 CoinRepository.getInstance().getListliveData().postValue(CoinRepository.getInstance().getAllList());
+                //해외거래소 웹소켓
+                request = new Request.Builder()
+                        .url(binanceSocketUri)
+                        .build();
+                overseasListener = WebSocketListener.getInstance(this,context, WebSocketListener.WebsocketType.overseas);
+                overseasListener.addExchangeName("바이낸스",this);
+                client.newWebSocket(request, overseasListener);
             }else{
                 while(i.hasNext()){
                     key = i.next().toString();

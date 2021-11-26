@@ -35,6 +35,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONObject;
 
+import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -72,17 +73,25 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-                String fromNotification = extras.getString("id");
-                Bundle bundle = new Bundle();
-                Fragment fr = new NoticeFragment();
-                FragmentManager fm = getSupportFragmentManager();
-                bundle.putString("id", fromNotification);
-                Log.v(TAG,fromNotification);
-                fr.setArguments(bundle);
-                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment, fr);
-                fragmentTransaction.commit();
-                bundle = null;
+            for (String key : extras.keySet()) {
+                Log.e("뭐가있는데", key + " : " + (extras.get(key) != null ? extras.get(key) : "NULL"));
+            }
+                if(extras.getString("id")!=null){
+                    String fromNotification = extras.getString("id");
+                    Bundle bundle = new Bundle();
+                    Fragment fr = new NoticeFragment();
+                    FragmentManager fm = getSupportFragmentManager();
+                    bundle.putString("id", fromNotification);
+                    fr.setArguments(bundle);
+                    getIntent().replaceExtras(new Bundle());
+                    getIntent().setAction("");
+                    getIntent().setData(null);
+                    getIntent().setFlags(0);
+                    FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                    fragmentTransaction.replace(R.id.fragment, fr);
+                    fragmentTransaction.commit();
+                }
+
         }
     }
 
