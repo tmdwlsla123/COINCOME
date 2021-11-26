@@ -3,16 +3,31 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable-night/bottom_border.xml" value="0.22239583333333332" />
         <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable-v24/bottom_border.xml" value="0.33" />
+        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable/pink_out_line.xml" value="0.20833333333333334" />
+        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable/rectangle.xml" value="0.20833333333333334" />
+        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable/settest.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable/sort_clip_source.xml" value="0.2078125" />
         <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable/sort_down_clip_source.xml" value="0.20677083333333332" />
+        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable/star_border.xml" value="0.17395833333333333" />
+        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable/style_off.xml" value="0.20833333333333334" />
+        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable/style_on.xml" value="0.20833333333333334" />
+        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable/switch_background.xml" value="0.20833333333333334" />
+        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable/switch_off.xml" value="0.20833333333333334" />
+        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable/switch_selector.xml" value="0.20833333333333334" />
+        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable/switch_thumb.xml" value="0.22239583333333332" />
+        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable/switch_track_off.xml" value="0.22239583333333332" />
+        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable/switch_track_on.xml" value="0.22239583333333332" />
+        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable/switch_track_selector.xml" value="0.22239583333333332" />
+        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/drawable/toggle_widget_background.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/layout/fragment_calc.xml" value="0.33" />
         <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/layout/fragment_notice.xml" value="0.33" />
         <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/layout/fragment_notice_detail.xml" value="0.33" />
         <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/layout/fragment_quote.xml" value="0.33" />
         <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/layout/fragment_setting.xml" value="0.36614583333333334" />
-        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/layout/list.xml" value="0.2905982905982906" />
+        <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/layout/list.xml" value="0.22" />
         <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/layout/notice_list.xml" value="0.20625" />
         <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/layout/recyleview.xml" value="0.2046875" />
         <entry key="..\:/Users/seungji/AndroidStudioProjects/COINCOME/app/src/main/res/menu/bottom_navi.xml" value="0.36614583333333334" />

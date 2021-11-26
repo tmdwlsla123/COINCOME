@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.coincome.Implements.SortArrayList;
 import com.example.coincome.RecyclerView.Coin;
+import com.example.coincome.Room.Favorite;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,8 +17,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class CoinRepository {
 
@@ -26,10 +29,13 @@ public class CoinRepository {
 
     private MutableLiveData<List<Coin>> listliveData = new MutableLiveData<>();
     private MutableLiveData<List<Coin>> searchliveData = new MutableLiveData<>();
+    public int favFlag;
+
+
+
     private List<Coin> list = new ArrayList<>();
     private String s;
     private int flag;
-
     public int getFlag() {
         return flag;
     }
@@ -82,18 +88,16 @@ public class CoinRepository {
             }
 
         }
-        //검색 데이터
-        if(!s.equals("") && s !=null){
-            Log.v("coinrepo",s);
-            List<Coin> coinlist = new ArrayList<>();
-            for(int i = 0; i< list.size(); i++){
-                if(list.get(i).getCoinName().contains(s)){
-                    coinlist.add(list.get(i));
-                }
-            }
-            searchliveData.postValue(coinlist);
-        }
 
+
+//        if(s!=null){
+//            Set set = s.keySet();
+//            Iterator iterator = set.iterator();
+//            while(iterator.hasNext()){
+//                key = (String)iterator.next();
+//                Log.v("coinrepo",key);
+//            }
+//        }
         //정렬
         try {
             if(flag==0){
@@ -111,8 +115,46 @@ public class CoinRepository {
             e.printStackTrace();
         }
 
+        //검색 데이터 + 관심상태
+        if((!s.equals("") && s !=null) && favFlag==1){
+            List<Coin> coinlist = new ArrayList<>();
+            for(int i = 0; i< list.size(); i++) {
+                //검색+즐찾
+                if ((list.get(i).getCoinName().contains(s) || list.get(i).getSymbol().contains(s.toUpperCase())) && list.get(i).isChecked()) {
+                    coinlist.add(list.get(i));
+                }
 
-        listliveData.postValue(list);
+            }
+            searchliveData.postValue(coinlist);
+            //검색만
+        }else if((!s.equals("") && s !=null) && favFlag==0){
+            List<Coin> coinlist = new ArrayList<>();
+            for(int i = 0; i< list.size(); i++) {
+                //검색
+                if (list.get(i).getCoinName().contains(s) || list.get(i).getSymbol().contains(s.toUpperCase())) {
+                    coinlist.add(list.get(i));
+                }
+
+            }
+            searchliveData.postValue(coinlist);
+        }else if((s.equals("") || s ==null) && favFlag==1){
+            List<Coin> coinlist = new ArrayList<>();
+            for(int i = 0; i< list.size(); i++) {
+                //검색
+                if (list.get(i).isChecked()) {
+                    coinlist.add(list.get(i));
+                }
+
+            }
+            searchliveData.postValue(coinlist);
+        }else{
+            listliveData.postValue(list);
+        }
+
+
+
+
+
     }
     //해외거래소 시세
     public void updateOverseasList(Coin coin){
@@ -154,6 +196,7 @@ public class CoinRepository {
         return searchliveData;
     }
 
+
     private JSONArray coin = new JSONArray();
     public static CoinRepository getInstance() {
         if (instance == null) {
@@ -181,28 +224,6 @@ public class CoinRepository {
     }
 
 
-//    public JSONArray getCoin() {
-//        return coin;
-//    }
-//
-//    public void setCoin(JSONObject jsonObject) {
-//        this.coin.put(jsonObject);
-//    }
-//    public void setMerge(JSONObject jsonObject){
-//
-//        for(int i=0; i<coin.length(); i++){
-//            try {
-//                if(coin.getJSONObject(i).getString("cd").equals(jsonObject.getString("cd"))){
-//                    coin.put(i,merge(jsonObject,coin.getJSONObject(i)));
-//                    break;
-//                }
-//
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//
-//            }
-//        }
-//
-//    }
+
 
 }

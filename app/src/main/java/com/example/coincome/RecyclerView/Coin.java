@@ -11,6 +11,24 @@ public class Coin {
     String coinChange;
     Double coinDaytoday;
     Double tradeVolume;
+    String symbol;
+    String exchange;
+    boolean isChecked;
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
+    public String getExchange() {
+        return exchange;
+    }
+
+    public void setExchange(String exchange) {
+        this.exchange = exchange;
+    }
 
     public Double getCoinOverseasPrice() {
         return coinOverseasPrice;
@@ -79,7 +97,13 @@ public class Coin {
         this.coinDaytoday = coinDaytoday;
     }
 
+    public String getSymbol() {
+        return symbol;
+    }
 
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
 
 
 

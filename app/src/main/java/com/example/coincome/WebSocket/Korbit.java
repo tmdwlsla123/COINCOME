@@ -25,7 +25,7 @@ public class Korbit {
             jsonObject1.getString("last");
             Coin coin = new Coin();
             int idx = jsonObject1.getString("currency_pair").indexOf("_");
-            coin.setMarket("KRW-"+jsonObject1.getString("currency_pair").substring(0,idx).toUpperCase());
+            coin.setMarket(jsonObject1.getString("currency_pair").substring(0,idx).toUpperCase()+"-KRW");
             coin.setCoinName(jsonObject1.getString("currency_pair"));
             coin.setCoinPrice(jsonObject1.getDouble("last"));
 

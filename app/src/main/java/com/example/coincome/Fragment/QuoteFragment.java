@@ -23,8 +23,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.example.coincome.Exchange.Exchange;
 import com.example.coincome.Implements.ScrollListener;
@@ -36,9 +39,14 @@ import com.example.coincome.RecyclerView.QuoteAdapter;
 import com.example.coincome.Retrofit2.ApiInterface;
 import com.example.coincome.Retrofit2.HttpClient;
 
+import com.example.coincome.Room.Favorite;
+import com.example.coincome.Room.RoomDB;
 import com.example.coincome.ViewModel.CoinRepository;
 import com.example.coincome.ViewModel.CoinViewModel;
 import com.example.coincome.WebSocket.WebSocketListener;
+import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
+import com.llollox.androidtoggleswitch.widgets.ToggleSwitchButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,6 +55,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -98,7 +107,10 @@ public class QuoteFragment extends Fragment {
     ImageView nameSortImage,priceSortImage,daytodaySortImage,premiumSortImage;
 
     boolean shouldStopLoop = false;
-    Handler mHandler = new Handler();;
+    Handler mHandler = new Handler();
+    ToggleSwitch multipleToggleSwitch;
+    String spinnerName;
+    String Fav_s;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -120,6 +132,25 @@ public class QuoteFragment extends Fragment {
         premiumSort = rootView.findViewById(R.id.premium_sort);
         domesticExchange = rootView.findViewById(R.id.domestic_exchange);
         overseasExchange = rootView.findViewById(R.id.overseas_exchange);
+        multipleToggleSwitch = rootView.findViewById(R.id.tab_switch);
+        multipleToggleSwitch.setCheckedPosition(0);
+
+
+        multipleToggleSwitch.setOnChangeListener(new ToggleSwitch.OnChangeListener() {
+            @Override
+            public void onToggleSwitchChanged(int i) {
+
+                    CoinRepository.getInstance().favFlag = i;
+                    if(Fav_s==null){
+                        Fav_s="";
+                    }
+                    viewModel.searchQuery.postValue(Fav_s);
+
+            }
+        });
+//        radioGroup.check(R.id.now_tab);
+
+
         ArrayAdapter exchangeAdapter = ArrayAdapter.createFromResource(context, R.array.domestic_exchange, android.R.layout.simple_spinner_dropdown_item);
         domesticExchange.setAdapter(exchangeAdapter);
         nameSortImage = rootView.findViewById(R.id.name_sort_image);
@@ -147,12 +178,12 @@ public class QuoteFragment extends Fragment {
             String flag = "";
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
                     if(!flag.equals(adapterView.getItemAtPosition(i))){
                         shouldStopLoop = true;
                         flag = adapterView.getItemAtPosition(i).toString();
                         CoinRepository.getInstance().getAllList().clear();
                         exchange.ExchangeClear();
+                        spinnerName = adapterView.getItemAtPosition(i).toString();
                         Log.v("spinner",adapterView.getItemAtPosition(i).toString());
 
 //                if(listener!=null &&  listener.isConnected == true) listener.webSocket.cancel();
@@ -207,10 +238,10 @@ public class QuoteFragment extends Fragment {
 //        viewModel.getSearchliveData(viewModel.getListliveData());
         viewModel.getSearchliveData(viewModel.getListliveData()).observe(getViewLifecycleOwner(), data ->{
 
-
+//            Log.v("update", String.valueOf(data.size()));
             quoteAdapter.updateQouteAdapter(data);
 //            quoteAdapter.getStateRestorationPolicy();
-//            Log.v("update", String.valueOf(data.size()));
+
 //            Log.v("update", );
         });
         viewModel.searchQuery.postValue("");
@@ -236,9 +267,9 @@ public class QuoteFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
-
+                    Fav_s = s;
                     viewModel.searchQuery.postValue(s);
-                    quoteAdapter.notifyDataSetChanged();
+
 //                    Log.v("onQueryTextChange",s);
 
 
@@ -261,6 +292,7 @@ public class QuoteFragment extends Fragment {
         super.onDestroy();
 //        client.dispatcher().executorService().shutdown();
 //        client.connectionPool().evictAll();
+
         if(domesticListener!=null)domesticListener.webSocket.close(1000,null);
         if(overseasListener!=null)overseasListener.webSocket.close(1000,null);
         shouldStopLoop = true;

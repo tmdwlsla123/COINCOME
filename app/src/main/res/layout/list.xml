@@ -2,19 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:layout_marginBottom="8dp"
+    android:background="@drawable/bottom_border"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:background="@drawable/bottom_border"
     >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:padding="5dp">
+        android:layout_height="match_parent"
+        >
 
         <LinearLayout
+            android:padding="5dp"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -31,46 +30,51 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:src="@drawable/star_icon_128523"/>
+                    android:id="@+id/coin_favorite"
+                    android:src="@drawable/star"/>
                 <TextView
                     android:id="@+id/coin_name"
                     android:layout_width="0dp"
                     android:layout_weight="3"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
+                    android:textColor = "?android:textColorPrimary"
+                    android:textStyle="bold"
                     android:text="코인이름"
-                    android:textSize="13dp"
+                    android:textSize="14dp"
                     android:paddingLeft="10dp"/>
                 <TextView
                     android:id="@+id/coin_price"
                     android:layout_width="0dp"
                     android:layout_weight="3"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
+                    android:textColor = "?android:textColorPrimary"
                     android:gravity="right"
+                    android:textStyle="bold"
                     android:text="가격"
-                    android:textSize="13dp"
+                    android:textSize="14dp"
                     android:paddingRight="25dp"/>
                 <TextView
                     android:id="@+id/coin_daytoday"
                     android:layout_width="0dp"
                     android:layout_weight="1.5"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
+                    android:textColor = "?android:textColorPrimary"
                     android:gravity="left"
+                    android:textStyle="bold"
                     android:text="전일대비"
-                    android:textSize="13dp" />
+                    android:textSize="14dp" />
 
                 <TextView
                     android:id="@+id/coin_premium"
                     android:layout_width="0dp"
                     android:layout_weight="1.5"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
+                    android:textColor = "?android:textColorPrimary"
                     android:includeFontPadding="false"
+                    android:textStyle="bold"
                     android:text="프리미엄"
                     android:gravity="center"
-                    android:textSize="13dp" />
+                    android:textSize="14dp" />
 
 
 
@@ -86,8 +90,10 @@
                     android:layout_weight="3"
                     android:layout_height="match_parent">
                     <TextView
+                        android:paddingLeft="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textSize="11dp"
                         android:id="@+id/coin_symbol"/>
                     </LinearLayout>
 <!--                <View-->

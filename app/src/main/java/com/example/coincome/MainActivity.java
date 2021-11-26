@@ -5,7 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.room.Room;
 
+import android.app.Activity;
+import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -15,14 +19,21 @@ import com.example.coincome.Fragment.CalcFragment;
 import com.example.coincome.Fragment.NoticeFragment;
 import com.example.coincome.Fragment.QuoteFragment;
 import com.example.coincome.Fragment.SettingFragment;
+import com.example.coincome.Implements.ThemeUtil;
 import com.example.coincome.Retrofit2.ApiInterface;
 import com.example.coincome.Retrofit2.HttpClient;
+import com.example.coincome.Room.DatabaseDao;
+import com.example.coincome.Room.Favorite;
+import com.example.coincome.Room.RoomDB;
+import com.example.coincome.Room.Setting;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONObject;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,19 +44,39 @@ public class MainActivity extends AppCompatActivity {
     Fragment noticeFragment;
     Fragment settingFragment;
     ApiInterface api;
+    DatabaseDao roomDB;
+
     String token;
     private String TAG = "FirebaseMessagingService";
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.v("MainActivity","onDestroy");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        RoomDB db = Room.databaseBuilder(this, RoomDB.class,"coincome").allowMainThreadQueries().build();
+//      최초실행시 1회 구독
+        if(db.DatabaseDao().AppFirstExist()){
+            FirebaseMessaging.getInstance().subscribeToTopic("all");
+            db.DatabaseDao().updateFirstExist();
+        }
         BottomNavigationView bottom_navigationbar = findViewById(R.id.bottom_navigationbar);
-
+        Log.v("MainActivity","onCreate");
         quoteFragment = new QuoteFragment();
         calcFragment = new CalcFragment();
         noticeFragment = new NoticeFragment();
         settingFragment = new SettingFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment,quoteFragment).commit();
+        if(ThemeUtil.IF_GET_DB==true&&ThemeUtil.IF_USR_SET==0){
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment,quoteFragment).commit();
+            Log.v("setting","IF_GET_DB : MainActivity");
+        }else if(ThemeUtil.IF_USR_SET==1){
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment,settingFragment).commit();
+        }
+
 
         bottom_navigationbar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -68,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        FirebaseMessaging.getInstance().subscribeToTopic("all");
+
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {

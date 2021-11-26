@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,7 @@ public class NoticeDetailFragment extends Fragment {
 
 
     private Context context;
-    TextView noticeTitle;
+    TextView noticeTitle,noticeText,noticeDatetime,noticeExchange;
     LinearLayout backLayout;
     @Override
     public void onDestroy() {
@@ -39,6 +40,9 @@ public class NoticeDetailFragment extends Fragment {
         context = container.getContext();
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_notice_detail, container, false);
         noticeTitle = rootView.findViewById(R.id.notice_title);
+        noticeText = rootView.findViewById(R.id.notice_text);
+        noticeDatetime = rootView.findViewById(R.id.notice_datetime);
+        noticeExchange = rootView.findViewById(R.id.notice_exchange);
         backLayout = rootView.findViewById(R.id.back_press);
         backLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +53,10 @@ public class NoticeDetailFragment extends Fragment {
 
         ArrayList<Notice> noticeList = (ArrayList<Notice>)getArguments().getSerializable("data");
         int position = getArguments().getInt("position");
-        noticeTitle.setText(noticeList.get(position).getText());
+        noticeTitle.setText(noticeList.get(position).getTitle());
+        noticeText.setText(Html.fromHtml(noticeList.get(position).getText()));
+        noticeDatetime.setText(noticeList.get(position).getDatetime());
+        noticeExchange.setText(noticeList.get(position).getExchange());
         Log.v("NoticeDetailFragment","생성");
         return rootView;
     }

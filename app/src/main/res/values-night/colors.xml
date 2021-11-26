@@ -5,13 +5,14 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FFFFFFFF</color>
+    <color name="white">#FF000000</color>
 
     <color name="red">#ef5350</color>
     <color name="green">#26a69a</color>
     <color name="blue">#285ff5</color>
-    <color name="black_2">#d7d7d7</color>
+    <color name="black_2">#383838</color>
+
     초록 #26a69a
     빨강 #ef5350
     파랑 #285ff5

@@ -20,7 +20,7 @@ public class Bithumb {
             Coin coin = new Coin();
             coin.setCoinName(jsonObject1.getString("symbol"));
             String[] array = jsonObject1.getString("symbol").replace("_","-").split("-");
-            String symbolFormat = array[1]+"-"+array[0];
+            String symbolFormat = array[0]+"-"+array[1];
             coin.setMarket(symbolFormat);
 
             //                coin.getCoinDaytoday()/(coin.getCoinPrice()-coin.getCoinDaytoday())*100

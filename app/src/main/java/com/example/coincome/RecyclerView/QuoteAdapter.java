@@ -2,6 +2,7 @@ package com.example.coincome.RecyclerView;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,16 +13,21 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.coincome.R;
+import com.example.coincome.Room.Favorite;
+import com.example.coincome.Room.RoomDB;
+import com.example.coincome.Room.Setting;
 import com.example.coincome.ViewModel.CoinRepository;
 
 import org.json.JSONArray;
@@ -120,6 +126,39 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
                     holder.coin_overseasprice.setText("");
                 }
 
+                if(coin.isChecked()){
+                    holder.coin_favorite.setImageResource(R.drawable.star_selected);
+                }else{
+                    holder.coin_favorite.setImageResource(R.drawable.star);
+                }
+
+                holder.coin_favorite.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                boolean isExist = RoomDB.getDatabase(context).DatabaseDao().favoriteExist(coin.getSymbol(),coin.getExchange());
+                                if(isExist){
+                                    RoomDB.getDatabase(context).DatabaseDao().deleteFavorite(coin.getSymbol(),coin.getExchange());
+                                    coin.setChecked(false);
+                                }else{
+                                    Favorite favorite = new Favorite();
+                                    favorite.setSymbol(coin.getSymbol());
+                                    favorite.setExchange(coin.getExchange());
+
+
+                                        RoomDB.getDatabase(context).DatabaseDao().insesrtFavorite(favorite);
+
+
+                                    coin.setChecked(true);
+                                }
+
+                            }
+                        });
+                    }
+                });
                 holder.coin_name.setText(coin.getCoinName());
 //            Log.v("adapter",coin.getCoinName());
                 String plus;
@@ -136,12 +175,12 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
                 }else{
                     //같음
                     plus = "";
-                    holder.coin_daytoday.setTextColor(Color.parseColor("#FF000000"));
-                    holder.coin_price.setTextColor(Color.parseColor("#FF000000"));
+                    holder.coin_daytoday.setTextColor(ContextCompat.getColor(context,R.color.black));
+                    holder.coin_price.setTextColor(ContextCompat.getColor(context,R.color.black));
                 }
 //        coin.getCoinOverseasPrice()
                 String daytoday = String.format("%.2f",coin.getCoinDaytoday()*100);
-                holder.coin_symbol.setText("");
+                holder.coin_symbol.setText(coin.getMarket());
                 holder.coin_daytoday.setText(plus+daytoday+"%");
                 if(coin.getCoinPremium()!=null){
                     String plus1;
@@ -207,6 +246,7 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
         TextView coin_overseasprice;
         TextView coin_premium;
         TextView coin_symbol;
+        ImageView coin_favorite;
         public ViewHolder(View view, Context context) {
             super(view);
             coin_daytoday = view.findViewById(R.id.coin_daytoday);
@@ -215,6 +255,7 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
             coin_overseasprice = view.findViewById(R.id.coin_overseasprice);
             coin_premium = view.findViewById(R.id.coin_premium);
             coin_symbol = view.findViewById(R.id.coin_symbol);
+            coin_favorite = view.findViewById(R.id.coin_favorite);
         }
 
     }

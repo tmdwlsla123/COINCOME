@@ -9,6 +9,7 @@ import com.example.coincome.Exchange.Exchange;
 import com.example.coincome.RecyclerView.Coin;
 import com.example.coincome.RecyclerView.QuoteAdapter;
 
+import com.example.coincome.Room.RoomDB;
 import com.example.coincome.ViewModel.CoinRepository;
 
 import org.json.JSONException;
@@ -77,11 +78,14 @@ public enum WebsocketType{
          if(exchangeName.equals("업비트")){
              for(int i=0; i<exchange.upbitMarket.length(); i++){
                  try {
+                     String[] array = exchange.upbitMarket.getJSONObject(i).getString("cd").split("-");
                      arrayList.add(exchange.upbitMarket.getJSONObject(i).getString("cd"));
-
                      Coin coin = new Coin();
-                     coin.setMarket(exchange.upbitMarket.getJSONObject(i).getString("cd"));
+                     coin.setMarket(array[1]+"-"+array[0]);
+                     coin.setSymbol(array[1]);
                      coin.setCoinName(exchange.upbitMarket.getJSONObject(i).getString("cn"));
+                     coin.setExchange("upbit");
+                     coin.setChecked(RoomDB.getDatabase(context).DatabaseDao().favoriteExist(array[1],"upbit"));
 //                     coin.setTradeVolume(exchange.upbitMarket.getJSONObject(i).getDouble("atp24h"));
                      coinRepo.add(coin);
                      //
@@ -107,11 +111,14 @@ public enum WebsocketType{
                      arrayList.add("\""+exchange.bithumbMarket.getJSONObject(i).getString("symbol")+"\"");
                      Coin coin = new Coin();
                      String[] array = exchange.bithumbMarket.getJSONObject(i).getString("symbol").replace("_","-").split("-");
-                     String symbolFormat = array[1]+"-"+array[0];
+                     String symbolFormat = array[0]+"-"+array[1];
                      coin.setMarket(symbolFormat);
+                     coin.setSymbol(array[0]);
                      coin.setCoinName(exchange.bithumbMarket.getJSONObject(i).getString("symbol"));
                      coin.setCoinPrice(exchange.bithumbMarket.getJSONObject(i).getDouble("coinPrice"));
                      coin.setCoinChange(exchange.bithumbMarket.getJSONObject(i).getString("change"));
+                     coin.setChecked(RoomDB.getDatabase(context).DatabaseDao().favoriteExist(array[0],"bithumb"));
+                     coin.setExchange("bithumb");
                      if(coin.getCoinChange().equals("FALL")){
                           multiply = -1;
                      }else{
@@ -134,10 +141,14 @@ public enum WebsocketType{
                      arrayList.add(exchange.korbitMarket.getJSONObject(i).getString("symbol"));
                      Coin coin = new Coin();
                      int idx = exchange.korbitMarket.getJSONObject(i).getString("symbol").indexOf("_");
-                     coin.setMarket("KRW-"+exchange.korbitMarket.getJSONObject(i).getString("symbol").substring(0,idx).toUpperCase());
+                     String symbol = exchange.korbitMarket.getJSONObject(i).getString("symbol").substring(0,idx).toUpperCase();
+                     coin.setMarket(symbol+"-KRW");
+                     coin.setSymbol(symbol);
                      coin.setCoinName(exchange.korbitMarket.getJSONObject(i).getString("symbol"));
                      coin.setCoinPrice(exchange.korbitMarket.getJSONObject(i).getDouble("last"));
                      coin.setCoinChange(exchange.korbitMarket.getJSONObject(i).getString("change"));
+                     coin.setChecked(RoomDB.getDatabase(context).DatabaseDao().favoriteExist(symbol,"korbit"));
+                     coin.setExchange("korbit");
                      if(coin.getCoinChange().equals("FALL")){
                          multiply = -1;
                      }else{

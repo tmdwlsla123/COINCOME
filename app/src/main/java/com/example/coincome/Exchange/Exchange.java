@@ -3,6 +3,7 @@ package com.example.coincome.Exchange;
 import android.util.Log;
 
 import com.example.coincome.RecyclerView.Coin;
+import com.example.coincome.Room.RoomDB;
 import com.example.coincome.ViewModel.CoinRepository;
 import com.google.gson.Gson;
 
@@ -12,6 +13,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Locale;
 
 public class Exchange {
     public JSONArray upbitMarket;
@@ -220,10 +222,12 @@ public class Exchange {
                     double daytoday = Math.abs(coinPrice-coinChange);
                     Coin coin = new Coin();
                     coin.setCoinPrice(coinPrice);
-                    coin.setCoinName(coinName);
+                    coin.setCoinName(coinName.toUpperCase()+"-KRW");
                     coin.setCoinDaytoday((daytoday/(coinPrice-daytoday))*multiply);
                     coin.setCoinChange(change);
-                    coin.setMarket(coinName);
+                    coin.setMarket(coinName.toUpperCase()+"-KRW");
+                    coin.setSymbol(coinName.toUpperCase());
+//                    coin.setChecked(RoomDB.getDatabase(context).DatabaseDao().favoriteExist(coinName.toUpperCase(),"coinone"));
                     CoinRepository.getInstance().add(coin);
 
                     }
@@ -255,6 +259,7 @@ public class Exchange {
                         coin.setCoinName(coinName);
                         coin.setCoinDaytoday((daytoday/(coinPrice-daytoday))*multiply);
                         coin.setCoinChange(change);
+                        coin.setExchange("coinone");
                         coin.setMarket(coinName);
                         CoinRepository.getInstance().updateList(coin);
                     }

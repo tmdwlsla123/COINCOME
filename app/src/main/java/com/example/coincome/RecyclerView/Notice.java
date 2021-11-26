@@ -1,6 +1,9 @@
 package com.example.coincome.RecyclerView;
 
-public class Notice {
+import java.io.Serializable;
+
+public class Notice implements Serializable {
+    private static final long searialVersionUID = 1L;
    private String id;
    private String title;
    private String text;

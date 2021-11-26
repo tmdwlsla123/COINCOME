@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     tools:context=".Fragment.QuoteFragment">
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,8 +22,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:background="@drawable/bottom_border">
+                    >
 
                         <Spinner
                             android:id="@+id/domestic_exchange"
@@ -46,34 +46,53 @@
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                        <TextView
-                            android:paddingLeft="10dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="USDKRW : "/>
-                        <TextView
-                            android:id="@+id/usdkrw"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=""/>
-                </LinearLayout>
-                <LinearLayout
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bottom_border"
                     >
+
+                                <TextView
+                                    android:paddingLeft="10dp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/black"
+                                    android:text="USDKRW : "/>
+                                <TextView
+                                    android:id="@+id/usdkrw"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/black"
+                                    android:text=""/>
+
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingRight="10dp">
+                                <com.llollox.androidtoggleswitch.widgets.ToggleSwitch
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="12dp"
+                                    android:id="@+id/tab_switch"
+                                    app:toggleHeight="30dp"
+                                    app:textToggleLeft="현재"
+                                    app:textToggleRight="관심"/>
+                        </LinearLayout>
+
+                </LinearLayout>
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-
-                            >
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:background="@drawable/bottom_border">
 
                                 <LinearLayout
                                     android:layout_width="0dp"
-                                    android:layout_weight="3"
+                                    android:layout_weight="3.5"
                                     android:layout_height="wrap_content"
                                     android:gravity="center">
                                         <LinearLayout
@@ -83,12 +102,12 @@
                                                 <TextView
                                                     android:layout_width="wrap_content"
                                                     android:layout_height="wrap_content"
-                                                    android:textColor="@android:color/black"
-                                                    android:textSize="12sp"
+                                                    android:textColor = "?android:textColorPrimary"
+                                                    android:textSize="12dp"
                                                     android:text="이름"/>
                                                 <ImageView
-                                                    android:layout_width="wrap_content"
-                                                    android:layout_height="wrap_content"
+                                                    android:layout_width="15dp"
+                                                    android:layout_height="15dp"
                                                     android:id="@+id/name_sort_image"
                                                     android:src="@drawable/sort_up_clip_source"/>
                                         </LinearLayout>
@@ -109,19 +128,20 @@
                                             android:layout_width="wrap_content"
 
                                             android:layout_height="wrap_content"
-                                            android:textColor="@android:color/black"
-                                            android:textSize="12sp"
+                                            android:textColor = "?android:textColorPrimary"
+                                            android:textSize="12dp"
                                             android:text="가격"/>
-                                        <ImageView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:id="@+id/price_sort_image"
-                                            android:src="@drawable/sort_up_clip_source"/>
-                                </LinearLayout></LinearLayout>
+
+                                                <ImageView
+                                                    android:id="@+id/price_sort_image"
+                                                    android:layout_width="15dp"
+                                                    android:layout_height="15dp"
+                                                    android:src="@drawable/sort_up_clip_source" />
+                                        </LinearLayout></LinearLayout>
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_weight="2"
-                                    android:gravity="right"
+                                    android:gravity="center"
                                     android:layout_height="wrap_content">
                                         <LinearLayout
                                             android:layout_width="wrap_content"
@@ -130,12 +150,12 @@
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:textColor="@android:color/black"
-                                            android:textSize="12sp"
+                                            android:textColor = "?android:textColorPrimary"
+                                            android:textSize="12dp"
                                             android:text="전일대비"/>
                                         <ImageView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
+                                            android:layout_width="15dp"
+                                            android:layout_height="15dp"
                                             android:id="@+id/daytoday_sort_image"
                                             android:src="@drawable/sort_up_clip_source"/>
                                         </LinearLayout>
@@ -143,7 +163,7 @@
 
                                 <LinearLayout
                                     android:layout_width="0dp"
-                                    android:layout_weight="2"
+                                    android:layout_weight="1.5"
                                     android:gravity="center"
                                     android:layout_height="wrap_content">
                                         <LinearLayout
@@ -153,17 +173,17 @@
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:textColor="@android:color/black"
-                                            android:textSize="12sp"
+                                            android:textColor = "?android:textColorPrimary"
+                                            android:textSize="12dp"
                                             android:text="김프"/>
                                         <ImageView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
+                                            android:layout_width="15dp"
+                                            android:layout_height="15dp"
                                             android:id="@+id/premium_sort_image"
                                             android:src="@drawable/sort_up_clip_source"/>
                                 </LinearLayout>
                                 </LinearLayout>
-                        </LinearLayout>
+
                 </LinearLayout>
                 <include
                     android:layout_width="fill_parent"
