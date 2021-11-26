@@ -32,9 +32,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
+        Log.d(TAG, "From: " + remoteMessage.getFrom());
         // 메시지 수신 시 실행되는 메소드
         if (remoteMessage != null && remoteMessage.getData().size() > 0) {
             sendNotification(remoteMessage);
+            Log.d(TAG, "onMessageReceived: " + remoteMessage);
         }
     }
     /**
@@ -42,19 +44,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * **/
     private void sendNotification(RemoteMessage remoteMessage) {
 
-        String message = remoteMessage.getData().get("data");
-        // 수신되는 푸시 메시지
-        Log.v(TAG,remoteMessage.getData().get("title"));
-        Log.v(TAG,remoteMessage.getData().get("text"));
-        Log.v(TAG,"호출");
-        int messageDivider = message.indexOf("|");
-        // 구분자를 통해 어떤 종류의 알람인지를 구별합니다.
 
-        String pushType = message.substring(messageDivider+1); // 구분자 뒤에 나오는 메시지
+        // 수신되는 푸시 메시지
+        Log.v(TAG, String.valueOf(remoteMessage.getData()));
+        Log.v(TAG,remoteMessage.getData().get("title"));
+        Log.v(TAG,remoteMessage.getData().get("id"));
+        Log.v(TAG,"호출");
+        // 구분자를 통해 어떤 종류의 알람인지를 구별합니다.
+        String title = remoteMessage.getData().get("title");
+        String id = remoteMessage.getData().get("id");
+
 
 
         Intent resultIntent = new Intent(this, MainActivity.class);
-        resultIntent.putExtra("pushType", pushType);
+        resultIntent.putExtra("id", id);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
@@ -75,9 +78,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this, channel)
-//                            .setSmallIcon(R.drawable.maindriver)
-                            .setContentTitle("알림이 왔어요!")
-                            .setContentText(message.substring(0, messageDivider))
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle(title)
                             .setChannelId(channel)
                             .setAutoCancel(true)
                             .setColor(Color.parseColor("#0ec874"))
@@ -87,15 +89,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             NotificationManager notificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-            notificationManager.notify(9999, notificationBuilder.build());
+            notificationManager.notify(0, notificationBuilder.build());
 
 
         } else {
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this, "")
 //                            .setSmallIcon(R.drawable.maindriver)
-                            .setContentTitle("푸시 타이틀")
-                            .setContentText(message)
+                            .setContentTitle(title)
                             .setAutoCancel(true)
                             .setColor(Color.parseColor("#0ec874")) // 푸시 색상
                             .setContentIntent(pendingIntent)
@@ -104,7 +105,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             NotificationManager notificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-            notificationManager.notify(9999, notificationBuilder.build());
+            notificationManager.notify(0, notificationBuilder.build());
 
         }
     }

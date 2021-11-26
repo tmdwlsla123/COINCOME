@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.room.Room;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.coincome.Fragment.CalcFragment;
+import com.example.coincome.Fragment.NoticeDetailFragment;
 import com.example.coincome.Fragment.NoticeFragment;
 import com.example.coincome.Fragment.QuoteFragment;
 import com.example.coincome.Fragment.SettingFragment;
@@ -45,13 +47,43 @@ public class MainActivity extends AppCompatActivity {
     Fragment settingFragment;
     ApiInterface api;
     DatabaseDao roomDB;
-
+    public BottomNavigationView bottomNavigationView;
     String token;
     private String TAG = "FirebaseMessagingService";
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.v("MainActivity","onDestroy");
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        bottomNavigationView.setSelectedItemId(R.id.d);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+                String fromNotification = extras.getString("id");
+                Bundle bundle = new Bundle();
+                Fragment fr = new NoticeFragment();
+                FragmentManager fm = getSupportFragmentManager();
+                bundle.putString("id", fromNotification);
+                Log.v(TAG,fromNotification);
+                fr.setArguments(bundle);
+                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment, fr);
+                fragmentTransaction.commit();
+                bundle = null;
+        }
     }
 
     @Override
@@ -64,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             FirebaseMessaging.getInstance().subscribeToTopic("all");
             db.DatabaseDao().updateFirstExist();
         }
-        BottomNavigationView bottom_navigationbar = findViewById(R.id.bottom_navigationbar);
+        bottomNavigationView = findViewById(R.id.bottom_navigationbar);
         Log.v("MainActivity","onCreate");
         quoteFragment = new QuoteFragment();
         calcFragment = new CalcFragment();
@@ -78,18 +110,28 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        bottom_navigationbar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment page = getSupportFragmentManager().findFragmentByTag("noticeDetail");
+                if(R.id.c!=item.getItemId()&&page!=null){
+                    getSupportFragmentManager().beginTransaction().remove(page).commit();
+                    getSupportFragmentManager().popBackStack();
+                }
                 switch (item.getItemId()){
+
                     case R.id.a:
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment,quoteFragment).commit();
                         return true;
                     case R.id.b:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, calcFragment).commit();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment, calcFragment).commit();
                         return true;
                     case R.id.c:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, noticeFragment).commit();
+                        // based on the current position you can then cast the page to the correct
+                        // class and call the method:
+                        if (page == null) {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment, noticeFragment).commit();
+                        }
                         return true;
                     case R.id.d:
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, settingFragment).commit();

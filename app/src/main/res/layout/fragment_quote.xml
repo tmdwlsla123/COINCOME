@@ -22,6 +22,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
                     >
 
                         <Spinner
@@ -32,9 +33,11 @@
                             >
                         </Spinner>
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/exchange_12_32"/>
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            app:tint="@color/black"
+                            android:layout_gravity="center"
+                            android:src="@drawable/exchange_icon"/>
                         <Spinner
                             android:id="@+id/overseas_exchange"
                             android:layout_width="wrap_content"

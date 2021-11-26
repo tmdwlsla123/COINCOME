@@ -1,6 +1,7 @@
 package com.example.coincome.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.coincome.MainActivity;
 import com.example.coincome.R;
 import com.example.coincome.RecyclerView.Notice;
 import com.example.coincome.RecyclerView.NoticeAdapter;
@@ -31,7 +33,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,6 +53,30 @@ public class NoticeFragment extends Fragment {
     ArrayList<Notice> noticeList;
     ApiInterface api;
     String noticeUrl = "http://118.67.142.47/notice.py";
+    String id;
+    String TAG = "FirebaseMessagingService";
+    int flag = 0;
+    @Override
+    public void onResume() {
+        super.onResume();
+        Bundle extra = getArguments();
+        if(extra != null)
+        {
+                if(extra.getString("id")!=null){
+                    id = extra.getString("id");
+                    MainActivity mainActivity = (MainActivity) getActivity();
+                    mainActivity.bottomNavigationView.getMenu().findItem(R.id.c).setChecked(true);
+                    extra.remove("id");
+                }else{
+                    id ="";
+                }
+
+            Log.v(TAG,"NoticeFragment"+id);
+        }else{
+            id = "";
+        }
+
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -88,6 +117,14 @@ public class NoticeFragment extends Fragment {
                         String text = jsonObject.getString("text");
                         String exchange = jsonObject.getString("exchange");
                         String datetime = jsonObject.getString("datetime");
+                        SimpleDateFormat dateParser = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+                        try {
+                            Date date = dateParser.parse(datetime);
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yy-MM-dd HH:mm");
+                            datetime = dateFormat.format(date);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         notice.setId(id);
                         notice.setTitle(title);
                         notice.setText(text);
@@ -98,7 +135,13 @@ public class NoticeFragment extends Fragment {
                         Log.v("retrofit2", jsonObject.getString("title"));
 
                     }
-                    noticeAdapter.submitList(noticeList);
+
+                    if(id!=null){
+                        noticeAdapter.submitList(noticeList,id);
+                        Log.v(TAG,"NoticeFragment 어댑터에 아이디 전송");
+                    }else{
+                        noticeAdapter.submitList(noticeList);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

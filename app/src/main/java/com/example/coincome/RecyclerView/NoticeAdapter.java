@@ -2,6 +2,7 @@ package com.example.coincome.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder>{
     private Context context;
     private ArrayList<Notice> noticeList = new ArrayList<>();
-
+    private String id;
     public NoticeAdapter(Context context) {
         this.context = context;
 
@@ -30,7 +31,11 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
         this.noticeList = noticeList;
         notifyDataSetChanged();
     }
-
+    public void submitList(ArrayList<Notice> noticeList,String id){
+        this.noticeList = noticeList;
+        this.id = id;
+        notifyDataSetChanged();
+    }
     @NonNull
     @Override
     public NoticeAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -43,6 +48,11 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull NoticeAdapter.ViewHolder holder, int position) {
         final Notice notice = noticeList.get(position);
+        if(id.equals(notice.getId())){
+            id="";
+            holder.view.performClick();
+            Log.v("FirebaseMessagingService","NoticeAdapter"+id);
+        }
         holder.title.setText(notice.getTitle());
         holder.datetime.setText(notice.getDatetime());
         holder.exchange.setText(notice.getExchange());
@@ -57,18 +67,20 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
         TextView datetime;
         TextView exchange;
         Fragment noticeDetail;
+        View view;
         public ViewHolder(View view, Context context) {
             super(view);
             title = view.findViewById(R.id.title);
             datetime = view.findViewById(R.id.datetime);
             exchange = view.findViewById(R.id.exchange);
+            this.view = view;
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     noticeDetail = new NoticeDetailFragment();
                     ((MainActivity)context).getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.fragment,noticeDetail)
+                            .replace(R.id.fragment,noticeDetail,"noticeDetail")
                             .addToBackStack(null)
                             .commit();
                     Bundle bundle = new Bundle();
