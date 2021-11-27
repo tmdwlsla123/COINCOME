@@ -28,8 +28,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:id="@+id/coin_favorite"
                     android:src="@drawable/star"/>
                 <TextView
@@ -83,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <View
-                    android:layout_width="16dp"
+                    android:layout_width="20dp"
                     android:layout_height="16dp"/>
                 <LinearLayout
                     android:layout_width="0dp"

@@ -1,5 +1,6 @@
 package com.example.coincome.Fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -56,6 +57,14 @@ public class NoticeFragment extends Fragment {
     String id;
     String TAG = "FirebaseMessagingService";
     int flag = 0;
+    private Activity a;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof Activity){
+            a = (Activity)context;
+        }
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -82,7 +91,7 @@ public class NoticeFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.v("NoticeFragment","생성");
         // Inflate the layout for this fragment
-        context = container.getContext();
+        context = a;
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_notice, container, false);
         noticeList = new ArrayList<>();
         noticeRecyclerView = rootView.findViewById(R.id.noti_list);

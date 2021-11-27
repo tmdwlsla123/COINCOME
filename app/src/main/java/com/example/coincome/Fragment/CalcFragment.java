@@ -1,8 +1,10 @@
 package com.example.coincome.Fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
@@ -25,11 +27,19 @@ public class CalcFragment extends Fragment {
     private Context context;
     EditText marketPrice,entryPrice,coinSize,addPrice,addSize,commission;
     TextView averagePrice,pnl,valuationAmount,principal,quantity;
+    private Activity a;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof Activity){
+            a = (Activity)context;
+        }
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        context = container.getContext();
+        context = a;
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_calc, container, false);
 
         marketPrice = rootView.findViewById(R.id.market_price);

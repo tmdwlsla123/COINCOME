@@ -1,8 +1,10 @@
 package com.example.coincome.Fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -27,6 +29,14 @@ public class NoticeDetailFragment extends Fragment {
     private Context context;
     TextView noticeTitle,noticeText,noticeDatetime,noticeExchange;
     LinearLayout backLayout;
+    private Activity a;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof Activity){
+            a = (Activity)context;
+        }
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -37,7 +47,7 @@ public class NoticeDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        context = container.getContext();
+        context = a;
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_notice_detail, container, false);
         noticeTitle = rootView.findViewById(R.id.notice_title);
         noticeText = rootView.findViewById(R.id.notice_text);

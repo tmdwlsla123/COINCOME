@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.room.Room;
@@ -39,12 +40,20 @@ public class SettingFragment extends Fragment {
     private Context context;
     Switch noticeSwitch,dayNightMode;
     RoomDB roomDB;
+    private Activity a;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof Activity){
+            a = (Activity)context;
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        context = container.getContext();
+        context =a;
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_setting, container, false);
         noticeSwitch = rootView.findViewById(R.id.notice_switch);
         dayNightMode = rootView.findViewById(R.id.day_night_switch);

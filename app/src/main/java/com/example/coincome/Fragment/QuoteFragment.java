@@ -1,5 +1,6 @@
 package com.example.coincome.Fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ClipDrawable;
 import android.os.Bundle;
@@ -112,18 +113,27 @@ public class QuoteFragment extends Fragment {
     ToggleSwitch multipleToggleSwitch;
     String spinnerName;
     String Fav_s;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
 
     }
+    private Activity a;
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof Activity){
+            a = (Activity)context;
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        context = container.getContext();
+        context = a;
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_quote, container, false);
         usdkrw = rootView.findViewById(R.id.usdkrw);
         serach = rootView.findViewById(R.id.serach);
