@@ -68,8 +68,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/market_price"
-                        android:inputType="number"
-                        android:digits="0123456789"
+                        android:inputType="numberDecimal"
                         android:hint="" />
 
                 </LinearLayout>
@@ -99,8 +98,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/entry_price"
-                        android:inputType="number"
-                        android:digits="0123456789"
+                        android:inputType="numberDecimal"
                         android:hint="" />
 
                 </LinearLayout>
@@ -128,8 +126,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/coin_size"
-                        android:inputType="number"
-                        android:digits="0123456789"
+                        android:inputType="numberDecimal"
                         android:hint="" />
 
                 </LinearLayout>
@@ -157,8 +154,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/add_price"
-                        android:inputType="number"
-                        android:digits="0123456789"
+                        android:inputType="numberDecimal"
                         android:hint="" />
 
                 </LinearLayout>
@@ -186,39 +182,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/add_size"
-                        android:inputType="number"
-                        android:digits="0123456789"
+                        android:inputType="numberDecimal"
                         android:hint="" />
 
                 </LinearLayout>
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:layout_weight="1">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
 
-                        android:text="매매 수수료"/>
-
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/commission"
-                        android:hint="" />
-
-                </LinearLayout>
-            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

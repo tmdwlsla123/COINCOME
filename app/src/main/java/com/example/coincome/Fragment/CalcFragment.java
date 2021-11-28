@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -25,7 +26,7 @@ public class CalcFragment extends Fragment {
      *
      */
     private Context context;
-    EditText marketPrice,entryPrice,coinSize,addPrice,addSize,commission;
+    EditText marketPrice,entryPrice,coinSize,addPrice,addSize;
     TextView averagePrice,pnl,valuationAmount,principal,quantity;
     private Activity a;
     @Override
@@ -47,7 +48,7 @@ public class CalcFragment extends Fragment {
         coinSize = rootView.findViewById(R.id.coin_size);
         addPrice = rootView.findViewById(R.id.add_price);
         addSize = rootView.findViewById(R.id.add_size);
-        commission = rootView.findViewById(R.id.commission);
+
         averagePrice = rootView.findViewById(R.id.average_price);
         valuationAmount = rootView.findViewById(R.id.valuation_amount);
         pnl = rootView.findViewById(R.id.pnl);
@@ -60,7 +61,6 @@ public class CalcFragment extends Fragment {
                 .setCoinSize(coinSize)
                 .setAddPrice(addPrice)
                 .setAddSize(addSize)
-                .setCommission(commission)
                 .setPNL(pnl)
                 .setAveragePrice(averagePrice)
                 .setValuationAmount(valuationAmount)
@@ -74,9 +74,11 @@ public class CalcFragment extends Fragment {
         coinSize.addTextChangedListener(watcher);
         addPrice.addTextChangedListener(watcher);
         addSize.addTextChangedListener(watcher);
-        commission.addTextChangedListener(watcher);
+
+
 
         return rootView;
     }
+
 
 }

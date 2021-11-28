@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 public class CalculateTextWatcher implements TextWatcher {
-    private EditText marketPrice,entryPrice,coinSize,addPrice,addSize,commission;
+    private EditText marketPrice,entryPrice,coinSize,addPrice,addSize;
     private TextView pnl,averagePrice,valuationAmount,principal,quantity;
     public CalculateTextWatcher() {
     }
@@ -35,10 +35,6 @@ public class CalculateTextWatcher implements TextWatcher {
     }
     public CalculateTextWatcher setAddSize(EditText addSize){
         this.addSize = addSize;
-        return this;
-    }
-    public CalculateTextWatcher setCommission(EditText commission){
-        this.commission = commission;
         return this;
     }
     public CalculateTextWatcher setPNL(TextView pnl){
@@ -79,34 +75,51 @@ public class CalculateTextWatcher implements TextWatcher {
     private void calculateResult(){
         Double marketPrice,entryPrice,coinSize,addPrice,addSize,commission;
         if(!this.marketPrice.getText().toString().equals("") && this.marketPrice.getText().toString() != null)
-            marketPrice = Double.parseDouble(this.marketPrice.getText().toString());
+            try {
+                marketPrice = Double.parseDouble(this.marketPrice.getText().toString());
+            }catch (NumberFormatException e){
+                marketPrice = 0.0;
+            }
         else
             marketPrice = 0.0;
 
         if(!this.entryPrice.getText().toString().equals("") && this.entryPrice.getText().toString() != null)
-            entryPrice = Double.parseDouble(this.entryPrice.getText().toString());
+            try {
+                entryPrice = Double.parseDouble(this.entryPrice.getText().toString());
+            }catch (NumberFormatException e){
+                entryPrice = 0.0;
+            }
         else
             entryPrice = 0.0;
 
         if(!this.coinSize.getText().toString().equals("") && this.coinSize.getText().toString() != null)
-            coinSize = Double.parseDouble(this.coinSize.getText().toString());
+            try {
+                coinSize = Double.parseDouble(this.coinSize.getText().toString());
+            }catch (NumberFormatException e){
+                coinSize = 0.0;
+            }
         else
             coinSize = 0.0;
 
         if(!this.addPrice.getText().toString().equals("") && this.addPrice.getText().toString() != null)
-            addPrice = Double.parseDouble(this.addPrice.getText().toString());
+            try {
+                addPrice = Double.parseDouble(this.addPrice.getText().toString());
+            }catch (NumberFormatException e){
+                addPrice = 0.0;
+            }
         else
             addPrice = 0.0;
 
         if(!this.addSize.getText().toString().equals("") && this.addSize.getText().toString() != null)
-            addSize = Double.parseDouble(this.addSize.getText().toString());
+            try {
+                addSize = Double.parseDouble(this.addSize.getText().toString());
+            }catch (NumberFormatException e){
+                addSize = 0.0;
+            }
         else
             addSize = 0.0;
 
-        if(!this.commission.getText().toString().equals("") && this.commission.getText().toString() != null)
-            commission = Double.parseDouble(this.commission.getText().toString());
-        else
-            commission = 0.0;
+
 
 
 
