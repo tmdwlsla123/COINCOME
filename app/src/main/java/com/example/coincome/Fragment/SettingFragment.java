@@ -163,6 +163,7 @@ public class SettingFragment extends Fragment {
                         }
                     });
                     ThemeUtil.applyTheme(ThemeUtil.DARK_MODE);
+                    ThemeUtil.IF_USR_SET = 1;
                 }else{
                     AsyncTask.execute(new Runnable() {
                         @Override
@@ -171,6 +172,7 @@ public class SettingFragment extends Fragment {
                         }
                     });
                     ThemeUtil.applyTheme(ThemeUtil.LIGHT_MODE);
+                    ThemeUtil.IF_USR_SET = 1;
                 }
             }
         });

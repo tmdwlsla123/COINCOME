@@ -28,7 +28,6 @@ public class MyApp extends Application {
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             public void run() {
                                 ThemeUtil.applyTheme(ThemeUtil.DARK_MODE);
-                                ThemeUtil.IF_GET_DB = true;
                                 Log.v("setting", "IF_GET_DB : myapp");
                             }
                         });

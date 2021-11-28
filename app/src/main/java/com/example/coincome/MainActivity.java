@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         calcFragment = new CalcFragment();
         noticeFragment = new NoticeFragment();
         settingFragment = new SettingFragment();
-        if(ThemeUtil.IF_GET_DB==true&&ThemeUtil.IF_USR_SET==0){
+        if(ThemeUtil.IF_USR_SET==0){
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment,quoteFragment).commit();
             Log.v("setting","IF_GET_DB : MainActivity");
         }else if(ThemeUtil.IF_USR_SET==1){

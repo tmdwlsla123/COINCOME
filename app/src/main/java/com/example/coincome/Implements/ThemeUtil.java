@@ -10,14 +10,10 @@ public class ThemeUtil {
     public static final String DEFAULT_MODE = "default";
     public static Integer NOW_MODE;
     public static int IF_USR_SET;
-    public static boolean IF_GET_DB = false;
+
 
     public static void applyTheme(String themeColor) {
-        if(!IF_GET_DB){
-            IF_USR_SET = 0;
-        }else{
-            IF_USR_SET = 1;
-        }
+
         switch (themeColor) {
             case LIGHT_MODE:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
