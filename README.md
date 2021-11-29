@@ -33,5 +33,28 @@
     implementation 'com.llollox:androidtoggleswitch:2.0.1'
     
 # In App
-    
+- 시세
+<img src="https://user-images.githubusercontent.com/63600525/143932234-970b7d93-8a1c-44c7-90e9-eec7e5ebbe35.png"  width="20%">
+
+- 계산기
+<img src="https://user-images.githubusercontent.com/63600525/143932255-4fb2fc54-1fa5-4284-8d59-c6693a819e14.png"  width="20%">
+
+- 공지사항
+<img src="https://user-images.githubusercontent.com/63600525/143933674-2abfd699-d00a-44d0-a6fa-4acc60a79256.png"  width="20%">
+
+- 공지사항 상세
+<img src="https://user-images.githubusercontent.com/63600525/143932266-2f3abf7b-638c-412b-9e45-563b7ead22b7.png"  width="20%">
+
+- 환경설정
+<img src="https://user-images.githubusercontent.com/63600525/143932290-db62cceb-e1a6-4732-9227-0e0a3cd791ed.png"  width="20%">
+
+# Bugs
+성능이 낮은 기기에서는 시세탭에서 스크롤시 밀리는 현상.
+백그라운드 이동시 웹소켓 종료가 안되는점.
+
+
+
+
+
+
     
