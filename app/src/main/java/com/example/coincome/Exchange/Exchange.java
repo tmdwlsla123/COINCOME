@@ -39,21 +39,16 @@ public class Exchange {
 
         //심볼 추가
         public void AddUpbitList(JSONArray jsonArray,JSONArray exchange){
-
             try {
-
                 for(int i = 0; i < jsonArray.length(); i++){
-
                     JSONObject jsonObject =  jsonArray.getJSONObject(i);
                     if(jsonObject.getString("market").contains("KRW")){
                         JSONObject upbit = new JSONObject();
                         upbit.put("cd",jsonObject.getString("market"));
                         upbit.put("cn",jsonObject.getString("korean_name"));
-//                        upbit.put("atp24h",jsonObject.getString("acc_trade_price_24h"));
                         exchange.put(upbit);
                     }
                 }
-
                 Log.v("retrofit2","거래소 : "+exchange.length());
                 Log.v("retrofit2","거래소 : "+exchange.get(0));
             } catch (JSONException e) {
@@ -169,6 +164,7 @@ public class Exchange {
         String key;
         while (i.hasNext()){
             try {
+
                 key =  i.next().toString();
                 JSONObject jsonObject1 = new JSONObject(jsonObject.getString(key));
                 JSONObject korbit = new JSONObject();

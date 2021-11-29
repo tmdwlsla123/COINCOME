@@ -29,7 +29,7 @@ public abstract class ScrollListener extends RecyclerView.OnScrollListener
             if(newState==RecyclerView.SCROLL_STATE_DRAGGING){
                 scrollFlag = newState;
             }
-            Log.v("onScrollStateChanged", String.valueOf(newState));
+//            Log.v("onScrollStateChanged", String.valueOf(newState));
 
 
 //        Log.v("onScrollStateChanged", String.valueOf(firstElementPosition));
@@ -45,13 +45,13 @@ public abstract class ScrollListener extends RecyclerView.OnScrollListener
                 position = firstElementPosition;
             }else {
                 recyclerView.getLayoutManager().scrollToPosition(position);
-                Log.v("onScrolled","position :" +String.valueOf(position));
-                Log.v("onScrolled","scrollFlag :" +String.valueOf(scrollFlag));
+//                Log.v("onScrolled","position :" +String.valueOf(position));
+//                Log.v("onScrolled","scrollFlag :" +String.valueOf(scrollFlag));
             }
         }
 
 
 
-        Log.v("onScrolled", String.valueOf(firstElementPosition));
+//        Log.v("onScrolled", String.valueOf(firstElementPosition));
     }
 }

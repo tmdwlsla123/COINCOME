@@ -85,8 +85,6 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
         this.coinlist.clear();
         this.coinlist.addAll(coinlist);
         diffResult.dispatchUpdatesTo(QuoteAdapter.this);
-
-
 //        differ.submitList(coinlist);
 
 //
@@ -196,17 +194,6 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
                 }else{
                     holder.coin_premium.setText("");
                 }
-//            if(CoinRepository.getInstance().getUsdkrw()!=null&&coin.getCoinOverseasPrice()!=null){
-//                double kimp =  (coin.getCoinPrice()-CoinRepository.getInstance().getUsdkrw()*coin.getCoinOverseasPrice());
-//                String premium = String.format("%.2f",(kimp/(coin.getCoinPrice()-kimp))*100);
-////                holder.coin_premium.setText(premium);
-//                holder.coin_premium.setText(premium+"%");
-////                String atp24h = String.format("%.2f",coin.getTradeVolume());
-////                holder.coin_premium.setText(premium);
-//            }else{
-//
-//                holder.coin_premium.setText("");
-//            }
             }catch (Exception e){
 
             }

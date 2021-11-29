@@ -114,6 +114,11 @@ public class QuoteFragment extends Fragment {
     String spinnerName;
     String Fav_s;
 
+    public static QuoteFragment getInstance() {
+        return instance;
+    }
+
+    private  static QuoteFragment instance;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -133,6 +138,7 @@ public class QuoteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        instance = this;
         context = a;
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_quote, container, false);
         usdkrw = rootView.findViewById(R.id.usdkrw);
@@ -370,6 +376,7 @@ public class QuoteFragment extends Fragment {
                                     .url(webSocketUrl)
                                     .build();
                             client.newWebSocket(request, domesticListener);
+
                         }else if(exchangeName.equals("코빗")){
                             //국내거래소 코빗
                             exchange.AddKorbitList(jsonObject,exchange.korbitMarket);
@@ -475,6 +482,88 @@ public class QuoteFragment extends Fragment {
         if(shouldStopLoop==true){
             call.cancel();
         }
+    }
+    public void requestGetBithumbList() {
+        String url = "http://118.67.142.47/bithumb_list.py"; //ex) 요청하고자 하는 주소가 http://10.0.2.2/login 이면 String url = login 형식으로 적으면 됨
+        api = HttpClient.getRetrofit().create( ApiInterface.class );
+        Call<String> call = api.requestGet(url);
+
+        // 비동기로 백그라운드 쓰레드로 동작
+        call.enqueue(new Callback<String>() {
+            // 통신성공 후
+            @Override
+            public void onResponse(Call<String> call, retrofit2.Response<String> response) {
+                //     서버에서 넘겨주는 데이터는 response.body()로 접근하면 확인가능
+
+                try {
+                    JSONArray jsonArray = new JSONArray(response.body());
+                    for(int i = 0; i < jsonArray.length(); i++){
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String kr_name = jsonObject.getString("kr_name");
+                        String symbol = jsonObject.getString("symbol").replace("/","_");
+                        for(int a = 0; a < CoinRepository.getInstance().getAllList().size(); a++){
+                            if(CoinRepository.getInstance().getAllList().get(a).getCoinName().equals(symbol)){
+                                CoinRepository.getInstance().getAllList().get(a).setCoinName(kr_name);
+                                break;
+                            }
+                        }
+
+                    }
+                    Log.v("retrofit2",String.valueOf("bithumb_size : "+jsonArray.length()));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            // 통신실패
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.v("retrofit2",String.valueOf("error : "+t.toString()));
+            }
+        });
+
+    }
+    public void requestGetkorbitList() {
+        String url = "http://118.67.142.47/korbit_list.py"; //ex) 요청하고자 하는 주소가 http://10.0.2.2/login 이면 String url = login 형식으로 적으면 됨
+        api = HttpClient.getRetrofit().create( ApiInterface.class );
+        Call<String> call = api.requestGet(url);
+
+        // 비동기로 백그라운드 쓰레드로 동작
+        call.enqueue(new Callback<String>() {
+            // 통신성공 후
+            @Override
+            public void onResponse(Call<String> call, retrofit2.Response<String> response) {
+                //     서버에서 넘겨주는 데이터는 response.body()로 접근하면 확인가능
+
+                try {
+                    JSONArray jsonArray = new JSONArray(response.body());
+                    for(int i = 0; i < jsonArray.length(); i++){
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String kr_name = jsonObject.getString("kr_name");
+                        String symbol = jsonObject.getString("symbol")+"_krw";
+                        for(int a = 0; a < CoinRepository.getInstance().getAllList().size(); a++){
+                            if(CoinRepository.getInstance().getAllList().get(a).getCoinName().equals(symbol)){
+                                CoinRepository.getInstance().getAllList().get(a).setCoinName(kr_name);
+                                break;
+                            }
+                        }
+
+                    }
+                    Log.v("retrofit2",String.valueOf("bithumb_size : "+jsonArray.length()));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            // 통신실패
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.v("retrofit2",String.valueOf("error : "+t.toString()));
+            }
+        });
+
     }
 
 }

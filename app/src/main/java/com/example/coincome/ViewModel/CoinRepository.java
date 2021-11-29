@@ -73,20 +73,13 @@ public class CoinRepository {
     }
     public void updateList(Coin coin) {
         for (int i = 0; i < list.size(); i++) {
-//            Log.v("bithumb","마켓이름 다름 list.get(i).getMarket() : "+list.get(i).getMarket());
-//            Log.v("bithumb","마켓이름 다름 coin.getMarket(): "+coin.getMarket());
             if (list.get(i).getMarket().equals(coin.getMarket())) {
-//                Log.v("bithumb","마켓이름 같음 : "+list.get(i).getMarket());
-//                Log.v("bithumb","마켓이름 같음 : "+list.size());
-//                list.get(i).setMarket(coin.getMarket());
                 list.get(i).setCoinPrice(coin.getCoinPrice());
                 list.get(i).setCoinDaytoday(coin.getCoinDaytoday());
                 list.get(i).setCoinChange(coin.getCoinChange());
                 list.get(i).setTradeVolume(coin.getTradeVolume());
-
                 break;
             }
-
         }
 
 

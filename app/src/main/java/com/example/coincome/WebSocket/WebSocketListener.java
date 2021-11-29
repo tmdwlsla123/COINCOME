@@ -6,6 +6,8 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.example.coincome.Exchange.Exchange;
+import com.example.coincome.Fragment.QuoteFragment;
+import com.example.coincome.MainActivity;
 import com.example.coincome.RecyclerView.Coin;
 import com.example.coincome.RecyclerView.QuoteAdapter;
 
@@ -135,6 +137,7 @@ public enum WebsocketType{
                  }
 
              }
+             QuoteFragment.getInstance().requestGetBithumbList();
          }else if(exchangeName.equals("코빗")){
              for(int i = 0; i < exchange.korbitMarket.length(); i++){
                  try {
@@ -161,6 +164,7 @@ public enum WebsocketType{
                      e.printStackTrace();
                  }
              }
+             QuoteFragment.getInstance().requestGetkorbitList();
          }
 
 
@@ -218,7 +222,7 @@ public enum WebsocketType{
             korbit.getKorbitData(text,coinRepo);
         }
 
-        Log.d("Socket","Receiving text:"+ text);
+//        Log.d("Socket","Receiving text:"+ text);
 
     }
 
@@ -226,7 +230,7 @@ public enum WebsocketType{
     public void onMessage(WebSocket webSocket, ByteString bytes) {
         isConnected =true;
         upbit.getUpbitData(bytes,coinRepo);
-        Log.d("Socket","Receiving ByteString:"+ bytes);
+//        Log.d("Socket","Receiving ByteString:"+ bytes);
     }
 
     @Override

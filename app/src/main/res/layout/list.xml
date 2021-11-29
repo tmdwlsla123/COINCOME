@@ -35,7 +35,7 @@
                 <TextView
                     android:id="@+id/coin_name"
                     android:layout_width="0dp"
-                    android:layout_weight="3"
+                    android:layout_weight="3.5"
                     android:layout_height="wrap_content"
                     android:textColor = "?android:textColorPrimary"
                     android:textStyle="bold"
@@ -45,21 +45,21 @@
                 <TextView
                     android:id="@+id/coin_price"
                     android:layout_width="0dp"
-                    android:layout_weight="3"
+                    android:layout_weight="2.5"
                     android:layout_height="wrap_content"
                     android:textColor = "?android:textColorPrimary"
                     android:gravity="right"
                     android:textStyle="bold"
                     android:text="가격"
                     android:textSize="14dp"
-                    android:paddingRight="25dp"/>
+                    />
                 <TextView
                     android:id="@+id/coin_daytoday"
                     android:layout_width="0dp"
-                    android:layout_weight="1.5"
+                    android:layout_weight="2"
                     android:layout_height="wrap_content"
                     android:textColor = "?android:textColorPrimary"
-                    android:gravity="left"
+                    android:gravity="right"
                     android:textStyle="bold"
                     android:text="전일대비"
                     android:textSize="14dp" />
@@ -67,7 +67,7 @@
                 <TextView
                     android:id="@+id/coin_premium"
                     android:layout_width="0dp"
-                    android:layout_weight="1.5"
+                    android:layout_weight="2"
                     android:layout_height="wrap_content"
                     android:textColor = "?android:textColorPrimary"
                     android:includeFontPadding="false"
@@ -107,15 +107,14 @@
                     android:layout_height="wrap_content"
                     android:gravity="right"
                     android:text="해외가격"
-                    android:paddingRight="25dp"
                     android:textSize="11dp"/>
                 <View
                     android:layout_width="0dp"
-                    android:layout_weight="1.5"
+                    android:layout_weight="2"
                     android:layout_height="match_parent"/>
                 <View
                     android:layout_width="0dp"
-                    android:layout_weight="1.5"
+                    android:layout_weight="2"
                     android:layout_height="match_parent"/>
             </LinearLayout>
 

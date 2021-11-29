@@ -39,7 +39,7 @@ public class Bithumb {
             double  daytoday = Math.abs(jsonObject1.getDouble("prevClosePrice")-jsonObject1.getDouble("closePrice"));
             coin.setCoinDaytoday((daytoday/(coin.getCoinPrice()-daytoday))*multiply);
 
-            Log.v("bithumb","symbol : "+jsonObject1.getString("symbol"));
+//            Log.v("bithumb","symbol : "+jsonObject1.getString("symbol"));
 
 
             coinRepo.updateList(coin);
