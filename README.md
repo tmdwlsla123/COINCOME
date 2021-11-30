@@ -1,7 +1,6 @@
 # Description
 국내 4대거래소 및 해외거래소 프리미엄 차이, 수익/손실 계산기, 거래소 공지 확인 어플
 # Development Environment
-- Android Studio 2020.3.1 Patch 2
 - Java
 
 ## Application Version
