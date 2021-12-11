@@ -1,6 +1,7 @@
 package com.example.coincome.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Debug;
@@ -14,6 +15,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.MainThread;
@@ -24,6 +26,8 @@ import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.coincome.ChartActivity;
+import com.example.coincome.Implements.ThemeUtil;
 import com.example.coincome.R;
 import com.example.coincome.Room.Favorite;
 import com.example.coincome.Room.RoomDB;
@@ -129,7 +133,11 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
                 }else{
                     holder.coin_favorite.setImageResource(R.drawable.star);
                 }
-
+                if(coin.getExchange().equals("upbit")||coin.getExchange().equals("bithumb")){
+                    holder.chart_icon.setImageResource(R.drawable.chart);
+                }else{
+                    holder.chart_icon.setImageResource(0);
+                }
                 holder.coin_favorite.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -227,6 +235,7 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        LinearLayout chart;
         TextView coin_name;
         TextView coin_price;
         TextView coin_daytoday;
@@ -234,6 +243,7 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
         TextView coin_premium;
         TextView coin_symbol;
         ImageView coin_favorite;
+        ImageView chart_icon;
         public ViewHolder(View view, Context context) {
             super(view);
             coin_daytoday = view.findViewById(R.id.coin_daytoday);
@@ -243,6 +253,20 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
             coin_premium = view.findViewById(R.id.coin_premium);
             coin_symbol = view.findViewById(R.id.coin_symbol);
             coin_favorite = view.findViewById(R.id.coin_favorite);
+            chart = view.findViewById(R.id.chart);
+            chart_icon = view.findViewById(R.id.chart_icon);
+            chart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(coinlist.get(getPosition()).getExchange().equals("upbit")||coinlist.get(getPosition()).getExchange().equals("bithumb")){
+                        Intent intent = new Intent(context, ChartActivity.class);
+                        intent.putExtra("exchange",coinlist.get(getPosition()).getExchange());
+                        intent.putExtra("symbol",coinlist.get(getPosition()).getSymbol()+"KRW");
+                        intent.putExtra("theme", ThemeUtil.NOW_MODE);
+                        context.startActivity(intent);
+                    }
+                }
+            });
         }
 
     }

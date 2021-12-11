@@ -237,6 +237,7 @@ public class Exchange {
                     coin.setCoinChange(change);
                     coin.setMarket(coinName.toUpperCase()+"-KRW");
                     coin.setSymbol(coinName.toUpperCase());
+                    coin.setExchange("coinone");
                     jsonObject1.put("overseas",coinName+"usdt@trade");
 //                    coin.setChecked(RoomDB.getDatabase(context).DatabaseDao().favoriteExist(coinName.toUpperCase(),"coinone"));
                     CoinRepository.getInstance().add(coin);

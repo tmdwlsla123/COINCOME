@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+<title></title>
+
+    <body>
+      <!-- TradingView Widget BEGIN -->
+      <div class="tradingview-parent">
+        <div class="tradingview-widget-container">
+          <div id="tradingview_314d6"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+          <script type="text/javascript">
+          var url_string = window.location.href
+          var url = new URL(url_string);
+          var exchange = url.searchParams.get("exchange");
+          var symbol = url.searchParams.get("symbol");
+          var theme = url.searchParams.get("theme");
+          new TradingView.widget(
+          {
+          "autosize" : true,
+          // "width": 980,
+          // "height": 610,
+          //"symbol": "UPBIT:BTCKRW",
+          "symbol": exchange+":"+symbol,
+          "interval": "D",
+          "timezone": "Etc/UTC",
+          "theme": theme,
+          // "theme": "light",
+          "style": "1",
+          "locale": "kr",
+          "toolbar_bg": "#f1f3f6",
+          "enable_publishing": false,
+          "allow_symbol_change": false,
+          "container_id": "tradingview_314d6"
+        }
+          );
+          </script>
+        </div>
+      </div>
+      <style media="screen">
+        #tradingview_314d6{
+        width:100vw;
+        height:100vh;
+        }
+        body{
+          margin: 0px;
+        }
+      </style>
+      <!-- TradingView Widget END -->
+    </body>
+</html>

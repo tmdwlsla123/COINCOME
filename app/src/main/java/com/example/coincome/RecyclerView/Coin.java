@@ -3,17 +3,17 @@ package com.example.coincome.RecyclerView;
 public class Coin {
 
 
-    String coinName;
-    String market;
-    Double coinPrice;
-    Double coinPremium;
-    Double coinOverseasPrice;
-    String coinChange;
-    Double coinDaytoday;
-    Double tradeVolume;
-    String symbol;
-    String exchange;
-    boolean isChecked;
+    private String coinName;
+    private String market;
+    private Double coinPrice;
+    private Double coinPremium;
+    private Double coinOverseasPrice;
+    private String coinChange;
+    private Double coinDaytoday;
+    private Double tradeVolume;
+    private String symbol;
+    private String exchange;
+    private boolean isChecked;
     public boolean isChecked() {
         return isChecked;
     }

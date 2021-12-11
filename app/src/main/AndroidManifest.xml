@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.coincome">
 
-<uses-permission android:name="android.permission.INTERNET" /><!--인터넷퍼미션-->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".Implements.MyApp"
         android:allowBackup="true"
@@ -13,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.COINCOME">
         <activity
+            android:name=".ChartActivity"
+            android:exported="true" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -21,6 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".Firebase.MyFirebaseMessagingService"
             android:enabled="true"
