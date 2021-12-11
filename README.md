@@ -36,6 +36,9 @@
 - 시세
 <img src="https://user-images.githubusercontent.com/63600525/143932234-970b7d93-8a1c-44c7-90e9-eec7e5ebbe35.png"  width="20%">
 
+- 차트
+<img src="https://user-images.githubusercontent.com/63600525/145673635-5d865c22-5fc7-499f-bef0-beee533d20b9.gif"  width="20%">
+
 - 계산기
 <img src="https://user-images.githubusercontent.com/63600525/143932255-4fb2fc54-1fa5-4284-8d59-c6693a819e14.png"  width="20%">
 
