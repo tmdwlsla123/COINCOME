@@ -43,7 +43,7 @@
 <img src="https://user-images.githubusercontent.com/63600525/143932255-4fb2fc54-1fa5-4284-8d59-c6693a819e14.png"  width="20%">
 
 - 공지사항
-<img src="https://user-images.githubusercontent.com/63600525/143933674-2abfd699-d00a-44d0-a6fa-4acc60a79256.png"  width="20%">
+<img src="https://user-images.githubusercontent.com/63600525/146675495-b7973d62-e456-41fa-ac38-aa84293f18e6.gif"  width="20%">
 
 - 공지사항 상세
 <img src="https://user-images.githubusercontent.com/63600525/143932266-2f3abf7b-638c-412b-9e45-563b7ead22b7.png"  width="20%">
