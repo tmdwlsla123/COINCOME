@@ -17,8 +17,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.coincome.MainActivity;
+import com.example.coincome.Paging.NoticeModel;
 import com.example.coincome.R;
 import com.example.coincome.RecyclerView.Notice;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -61,12 +63,15 @@ public class NoticeDetailFragment extends Fragment {
             }
         });
 
-        ArrayList<Notice> noticeList = (ArrayList<Notice>)getArguments().getSerializable("data");
-        int position = getArguments().getInt("position");
-        noticeTitle.setText(noticeList.get(position).getTitle());
-        noticeText.setText(Html.fromHtml(noticeList.get(position).getText()));
-        noticeDatetime.setText(noticeList.get(position).getDatetime());
-        noticeExchange.setText(noticeList.get(position).getExchange());
+        String title = getArguments().getString("title");
+        String text = getArguments().getString("text");
+        String exchange = getArguments().getString("exchange");
+        String datetime = getArguments().getString("datetime");
+//        int position = getArguments().getInt("position");
+        noticeTitle.setText(title);
+        noticeText.setText(Html.fromHtml(text));
+        noticeDatetime.setText(datetime);
+        noticeExchange.setText(exchange);
         Log.v("NoticeDetailFragment","생성");
         return rootView;
     }

@@ -5,7 +5,9 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.ConnectionSpec;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
@@ -19,8 +21,11 @@ public class HttpClient {
         if( retrofit == null )
         {
 
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+// set your desired log level
+//            logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
-
+                    .addInterceptor(logging)
 //                    .connectionSpecs(Arrays.asList(ConnectionSpec.MODERN_TLS, ConnectionSpec.COMPATIBLE_TLS))
                     .connectTimeout(10, TimeUnit.MINUTES)
                     .readTimeout(30, TimeUnit.SECONDS)
@@ -29,8 +34,9 @@ public class HttpClient {
 
             Retrofit.Builder builder = new Retrofit.Builder();
             builder.baseUrl("https://api.upbit.com/");//http://ccit2020.cafe24.com:8082/http://10.0.2.2
-//            builder.addConverterFactory( GsonConverterFactory.create() );  // 받아오는 Json 구조의 데이터를 객체 형태로 변환
             builder.addConverterFactory(ScalarsConverterFactory.create());  // String 등 처리시
+            builder.addConverterFactory( GsonConverterFactory.create() );  // 받아오는 Json 구조의 데이터를 객체 형태로 변환
+            builder.addCallAdapterFactory(RxJava3CallAdapterFactory.create());
             builder.client(okHttpClient);
 
 

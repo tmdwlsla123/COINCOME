@@ -2,6 +2,7 @@ package com.example.coincome.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,30 +12,39 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.paging.PagingDataAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.coincome.Fragment.NoticeDetailFragment;
 import com.example.coincome.MainActivity;
+import com.example.coincome.Paging.NoticeModel;
 import com.example.coincome.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder>{
+public class NoticeAdapter extends PagingDataAdapter<NoticeModel.Data,NoticeAdapter.ViewHolder> {
     private Context context;
-    private ArrayList<Notice> noticeList = new ArrayList<>();
     private String id;
-    public NoticeAdapter(Context context) {
-        this.context = context;
 
-    }
-    public void submitList(ArrayList<Notice> noticeList){
-        this.noticeList = noticeList;
-        notifyDataSetChanged();
-    }
-    public void submitList(ArrayList<Notice> noticeList,String id){
-        this.noticeList = noticeList;
+    static DiffUtil.ItemCallback<NoticeModel.Data> diff = new
+            DiffUtil.ItemCallback<NoticeModel.Data>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull NoticeModel.Data oldItem, @NonNull NoticeModel.Data newItem) {
+                    return oldItem.getId().equals(newItem.getId());
+                }
+
+                @Override
+                public boolean areContentsTheSame(@NonNull NoticeModel.Data oldItem, @NonNull NoticeModel.Data newItem) {
+                    return oldItem.equals(newItem);
+                }
+            };
+    public NoticeAdapter(Context context,String id) {
+        super(diff);
+        this.context = context;
         this.id = id;
-        notifyDataSetChanged();
+
     }
     @NonNull
     @Override
@@ -47,20 +57,23 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull NoticeAdapter.ViewHolder holder, int position) {
-        final Notice notice = noticeList.get(position);
-        if(id.equals(notice.getId())){
-            id="";
-            holder.view.performClick();
-            Log.v("FirebaseMessagingService","NoticeAdapter"+id);
+//        final Notice notice = noticeList.get(position);
+//        Log.d("onBindViewHolder", getItem(position).toString());
+        if(id!=null){
+            if(id.equals(getItem(position).getId())){
+                id="";
+                holder.view.performClick();
+                Log.v("FirebaseMessagingService","NoticeAdapter"+id);
+            }
         }
-        holder.title.setText(notice.getTitle());
-        holder.datetime.setText(notice.getDatetime());
-        holder.exchange.setText(notice.getExchange());
+        holder.title.setText(getItem(position).getTitle());
+        holder.datetime.setText(getItem(position).getDatetime());
+        holder.exchange.setText(getItem(position).getExchange());
     }
 
     @Override
     public int getItemCount() {
-        return noticeList.size();
+        return super.getItemCount();
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
@@ -84,9 +97,10 @@ public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder
                             .addToBackStack(null)
                             .commit();
                     Bundle bundle = new Bundle();
-//                    bundle.putString("title", noticeList.get(getLayoutPosition()).getTitle());
-                    bundle.putSerializable("data",noticeList);
-                    bundle.putInt("position",getLayoutPosition());
+                    bundle.putString("title",  getItem(getPosition()).getTitle());
+                    bundle.putString("text",  getItem(getPosition()).getText());
+                    bundle.putString("exchange",  getItem(getPosition()).getExchange());
+                    bundle.putString("datetime",  getItem(getPosition()).getDatetime());
                     noticeDetail.setArguments(bundle);
 
                 }

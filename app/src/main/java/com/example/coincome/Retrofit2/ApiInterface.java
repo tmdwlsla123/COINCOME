@@ -1,8 +1,11 @@
 package com.example.coincome.Retrofit2;
 
 
+import com.example.coincome.Paging.NoticeModel;
+
 import java.util.HashMap;
 
+import io.reactivex.rxjava3.core.Single;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.FieldMap;
@@ -14,6 +17,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface ApiInterface {
@@ -35,6 +39,11 @@ public interface ApiInterface {
     @Multipart
     @POST("{url}")
     Call<String> requestFilePost(@Path("url") String url, @PartMap HashMap<String,String> params, @Part MultipartBody.Part file);
+
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @GET("http://118.67.142.47/notice.py")
+    Single<NoticeModel> requestGetNotice(@Query("page") Integer page,@Query("size") String size);
+
 
 
 }
