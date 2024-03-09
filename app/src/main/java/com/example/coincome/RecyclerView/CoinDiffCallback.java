@@ -14,10 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class CoinDiffCallback extends DiffUtil.Callback {
-    private final List<Pair<String,Coin>> oldlist;
-    private final List<Pair<String,Coin>> newlist;
+    private final List<Coin> oldlist;
+    private final List<Coin> newlist;
 
-    public CoinDiffCallback(List<Pair<String,Coin>> oldlist, List<Pair<String,Coin>> newlist){
+    public CoinDiffCallback(List<Coin> oldlist, List<Coin> newlist){
         this.oldlist = oldlist;
         this.newlist = newlist;
     }
@@ -34,7 +34,7 @@ public class CoinDiffCallback extends DiffUtil.Callback {
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
 
-    return oldlist.get(oldItemPosition).second.getMarket()==newlist.get(newItemPosition).second.getMarket();
+    return oldlist.get(oldItemPosition).getMarket()==newlist.get(newItemPosition).getMarket();
 
 
     }
@@ -42,7 +42,7 @@ public class CoinDiffCallback extends DiffUtil.Callback {
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
 
-        return (oldlist.get(oldItemPosition).second.getCoinPrice()!=newlist.get(newItemPosition).second.getCoinPrice())||(oldlist.get(oldItemPosition).second.getCoinOverseasPrice()!=newlist.get(newItemPosition).second.getCoinOverseasPrice());
+        return (oldlist.get(oldItemPosition).getCoinPrice()!=newlist.get(newItemPosition).getCoinPrice())||(oldlist.get(oldItemPosition).getCoinOverseasPrice()!=newlist.get(newItemPosition).getCoinOverseasPrice());
 
     }
     @Nullable

@@ -77,7 +77,7 @@ public interface ApiInterface {
 //    public void sendRequest() {
 //        String url = "서버url"; //ex) 요청하고자 하는 주소가 http://10.0.2.2/login 이면 String url = login 형식으로 적으면 됨
 //        api = HttpClient.getRetrofit().create( ApiInterface.class );
-//        HashMap<String,String> params = new HashMap<>();
+//        HashMap<String,String> params = new ConcurrentHashMap<>();
 //        params.put("key", value);
 //        Call<String> call = api.requestPost(url,params);
 //

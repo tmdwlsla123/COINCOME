@@ -79,6 +79,7 @@ public enum WebsocketType{
          str = new StringBuilder();
          if(exchangeName.equals("업비트")){
              for(int i=0; i<exchange.upbitMarket.length(); i++){
+                 Log.v("실행여부", "실행여부");
                  try {
                      String[] array = exchange.upbitMarket.getJSONObject(i).getString("cd").split("-");
                      arrayList.add(exchange.upbitMarket.getJSONObject(i).getString("cd"));
@@ -181,7 +182,8 @@ public enum WebsocketType{
     @Override
     public void onOpen(WebSocket webSocket, Response response) {
 
-        marketList(exchangeName);
+//        marketList(exchangeName);
+
         //리팩토리 중 체크
         if(proxyStr != null) str = proxyStr;
 
@@ -234,7 +236,7 @@ public enum WebsocketType{
         isConnected =true;
         upbit.getUpbitData(bytes,coinRepo);
         //수신받고 있었ㅇ므...
-        Log.d("Socket","Receiving ByteString:"+ bytes);
+//        Log.d("Socket","Receiving ByteString:"+ bytes);
     }
 
     @Override

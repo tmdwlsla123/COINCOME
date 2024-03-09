@@ -199,9 +199,9 @@ public class QuoteFragment extends Fragment {
 //                            requestGet(upbitSocketUri,upbitRESTApiUri,adapterView.getItemAtPosition(i).toString());
                             requestGetCoinSymbol(upbitSocketUri,upbitRESTApiUri,adapterView.getItemAtPosition(i).toString());
                         }else if(adapterView.getItemAtPosition(i).equals("빗썸")){
-                            requestGet(bithumbSocketUri,bithumbRESTApiUri,adapterView.getItemAtPosition(i).toString());
+//                            requestGet(bithumbSocketUri,bithumbRESTApiUri,adapterView.getItemAtPosition(i).toString());
                         }else if(adapterView.getItemAtPosition(i).equals("코빗")){
-                            requestGet(korbitSocketUri,korbitRESTApiUri,adapterView.getItemAtPosition(i).toString());
+//                            requestGet(korbitSocketUri,korbitRESTApiUri,adapterView.getItemAtPosition(i).toString());
                         }else{
                             shouldStopLoop = false;
                             mHandler.post(runnable);
@@ -324,6 +324,8 @@ public class QuoteFragment extends Fragment {
 
 //                    //국내거래소
 //                    listener = new WebSocketListener(exchange,context,exchangeName);
+//                    exchange.AddUpbitList(jsonArray,exchange.upbitMarket);
+                    CoinRepository.getInstance().put(list,context);
                     domesticListener = WebSocketListener.getInstance(exchange,context, WebSocketListener.WebsocketType.domestic);
                     domesticListener.addExchangeName(exchangeName,exchange);
                     domesticListener.setProxyStr(coinParse.getSubscribeSymbols());
@@ -349,109 +351,7 @@ public class QuoteFragment extends Fragment {
                 }
             });
         }
-        public void requestGet(String webSocketUrl,String restApiUri,String exchangeName) {
-//        String url = "all"; //ex) 요청하고자 하는 주소가 http://10.0.2.2/login 이면 String url = login 형식으로 적으면 됨
-        api = HttpClient.getRetrofit().create( ApiInterface.class );
-        Call<String> call = api.requestGet(restApiUri);
 
-        // 비동기로 백그라운드 쓰레드로 동작
-        call.enqueue(new Callback<String>() {
-            // 통신성공 후
-            @Override
-            public void onResponse(Call<String> call, retrofit2.Response<String> response) {
-                //     서버에서 넘겨주는 데이터는 response.body()로 접근하면 확인가능
-
-                String result = response.body();
-                String firstChar = String.valueOf(result.charAt(0));
-
-                if (firstChar.equalsIgnoreCase("[")) {
-                    //json array
-                    try {
-                        JSONArray jsonArray = new JSONArray(response.body());
-                        Log.v("retrofit2", "REST API 국내 :"+jsonArray.toString());
-
-                    exchange.AddUpbitList(jsonArray,exchange.upbitMarket);
-//                    //국내거래소
-//                    listener = new WebSocketListener(exchange,context,exchangeName);
-                    domesticListener = WebSocketListener.getInstance(exchange,context, WebSocketListener.WebsocketType.domestic);
-                    domesticListener.addExchangeName(exchangeName,exchange);
-                    request = new Request.Builder()
-                            .url(webSocketUrl)
-                            .build();
-                    client.newWebSocket(request, domesticListener);
-
-                    exchange.AddBinanceList(jsonArray,exchange.binanceMarket,exchangeName);
-                    //해외거래소 웹소켓
-                    request = new Request.Builder()
-                            .url(binanceSocketUri)
-                            .build();
-//                    listener1 = new WebSocketListener(exchange,context,"바이낸스");
-                    overseasListener = WebSocketListener.getInstance(exchange,context, WebSocketListener.WebsocketType.overseas);
-                    overseasListener.addExchangeName("바이낸스",exchange);
-                    client.newWebSocket(request, overseasListener);
-
-
-
-
-                        Log.v("retrofit2", "REST API :"+jsonArray.toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }else{
-                    //json object
-                    try {
-                        JSONObject jsonObject = new JSONObject(response.body());
-                        if(exchangeName.equals("빗썸")){
-                            //국내거래소 빗썸
-                            exchange.AddBithumbList(jsonObject,exchange.bithumbMarket);
-//                            listener = new WebSocketListener(exchange,context,exchangeName);
-                            domesticListener = WebSocketListener.getInstance(exchange,context, WebSocketListener.WebsocketType.domestic);
-                            domesticListener.addExchangeName(exchangeName,exchange);
-                            request = new Request.Builder()
-                                    .url(webSocketUrl)
-                                    .build();
-                            client.newWebSocket(request, domesticListener);
-
-                        }else if(exchangeName.equals("코빗")){
-                            //국내거래소 코빗
-                            exchange.AddKorbitList(jsonObject,exchange.korbitMarket);
-//                            listener = new WebSocketListener(exchange,context,exchangeName);
-                            domesticListener = WebSocketListener.getInstance(exchange,context, WebSocketListener.WebsocketType.domestic);
-                            domesticListener.addExchangeName(exchangeName,exchange);
-                            request = new Request.Builder()
-                                    .url(webSocketUrl)
-                                    .build();
-                            client.newWebSocket(request, domesticListener);
-                        }
-
-
-                        exchange.AddBinanceList(jsonObject,exchange.binanceMarket,exchangeName);
-                        //해외거래소 웹소켓
-                        request = new Request.Builder()
-                                .url(binanceSocketUri)
-                                .build();
-//                        listener1 = new WebSocketListener(exchange,context,"바이낸스");
-                        overseasListener = WebSocketListener.getInstance(exchange,context, WebSocketListener.WebsocketType.overseas);
-                        overseasListener.addExchangeName("바이낸스",exchange);
-                        client.newWebSocket(request, overseasListener);
-                        Log.v("retrofit2", "REST API :"+jsonObject.getString("data").length());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-            // 통신실패
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Log.v("retrofit2",String.valueOf("error : "+t.toString()));
-            }
-        });
-        if(retrofitFlag==true){
-            call.cancel();
-        }
-    }
     public void requestGetUSDKRW() {
         String url = "all"; //ex) 요청하고자 하는 주소가 http://10.0.2.2/login 이면 String url = login 형식으로 적으면 됨
         api = HttpClient.getRetrofit().create( ApiInterface.class );

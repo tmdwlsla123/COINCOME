@@ -34,7 +34,6 @@ public class Upbit {
                 coin.setCoinDaytoday(jsonObject.getDouble("scp")/(coin.getCoinPrice()-jsonObject.getDouble("scp")));
                 String[] array = jsonObject.getString("cd").split("-");
                 coin.setMarket(array[1]+"-"+array[0]);
-
                 coinRepo.updateList(coin.getMarket(),coin);
 
             } catch (JSONException e) {

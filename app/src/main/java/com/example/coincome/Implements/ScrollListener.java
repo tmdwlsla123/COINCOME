@@ -29,10 +29,7 @@ public abstract class ScrollListener extends RecyclerView.OnScrollListener
             if(newState==RecyclerView.SCROLL_STATE_DRAGGING){
                 scrollFlag = newState;
             }
-//            Log.v("onScrollStateChanged", String.valueOf(newState));
 
-
-//        Log.v("onScrollStateChanged", String.valueOf(firstElementPosition));
     }
 
     @Override

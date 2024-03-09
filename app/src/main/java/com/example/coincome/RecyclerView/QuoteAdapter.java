@@ -47,13 +47,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
     Context context;
 
     final AsyncListDiffer<Coin> differ  = new AsyncListDiffer<Coin>(this,DIFF_CALLBACK);
-    private HashMap<String,Coin> coinHashMap = new HashMap<>();
-    private List<Pair<String,Coin>> coinList;
+
+    private List<Coin> coinList;
 
 
     public static final DiffUtil.ItemCallback<Coin> DIFF_CALLBACK
@@ -84,20 +85,17 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
         }
     };
 
-    public void updateQouteAdapter(HashMap<String,Coin> coinHashMap) {
-        Log.v("null 참조",coinHashMap.toString());
-        Log.v("null 참조",this.coinHashMap.toString());
-        this.coinHashMap.putAll(coinHashMap);
-        coinList = new ArrayList<>(coinHashMap.size());
-        coinHashMap.forEach((s,s2) -> coinList.add(new Pair<>(s,s2)));
-
-        final CoinDiffCallback diffCallback = new CoinDiffCallback(this.coinList, coinList);
+    public void updateQouteAdapter(List<Coin> newCoinList) {
+//        ArrayList<Pair<String,Coin>> newCoinList = new ArrayList<>(coinHashMap.size());
+//        coinHashMap.forEach((s,s2) -> newCoinList.add(new Pair<>(s,s2)));
+//        Log.v("adapter","updateQouteAdapter.coinHashMap.size() : " + coinHashMap.size());
+//        Log.v("adapter","updateQouteAdapter.coinHashMap : " + newCoinList);
+//        Log.v("adapter","updateQouteAdapter.coinList : " + coinList);
+        final CoinDiffCallback diffCallback = new CoinDiffCallback(this.coinList, newCoinList);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
-
-
-
-
+        this.coinList.clear();
+        this.coinList.addAll(newCoinList);
         diffResult.dispatchUpdatesTo(QuoteAdapter.this);
 //        differ.submitList(coinList);
 
@@ -124,16 +122,19 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
 
             super.onBindViewHolder(holder, position, payloads);
 
-                    final Coin coin = coinList.get(position).second;
+                    final Coin coin = coinList.get(position);
+//                    Log.v("viewHolder","coin : " + coin.getSymbol());
+
+
 //            final Coin coin = differ.getCurrentList().get(position);
             try {
                 if(coin.getCoinPrice()!=null){
-                    holder.coin_price.setText(MakePriceFormat(coin.getCoinPrice()));
+                    holder.coin_price.setText(makePriceFormat(coin.getCoinPrice()));
                 }else{
                     holder.coin_price.setText("");
                 }
                 if(coin.getCoinOverseasPrice()!=null){
-                    holder.coin_overseasprice.setText(MakePriceFormat(coin.getCoinOverseasPrice()*CoinRepository.getInstance().getUsdkrw()));
+                    holder.coin_overseasprice.setText(makePriceFormat(coin.getCoinOverseasPrice()*CoinRepository.getInstance().getUsdkrw()));
                 }else{
                     holder.coin_overseasprice.setText("");
                 }
@@ -176,7 +177,7 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
                     }
                 });
                 holder.coin_name.setText(coin.getCoinName());
-//            Log.v("adapter",coin.getCoinName());
+
                 String plus;
 
                 //전일대비 계산식 (현재가 - 전일종가)/전일 종가 x 100%
@@ -235,10 +236,7 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
 
     public QuoteAdapter(Context context) {
         this.context = context;
-
-
         coinList = new ArrayList<>();
-//        notifyDataSetChanged();
 
     }
 
@@ -268,10 +266,10 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
             chart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(coinList.get(getPosition()).second.getExchange().equals("upbit")||coinList.get(getPosition()).second.getExchange().equals("bithumb")){
+                    if(coinList.get(getPosition()).getExchange().equals("upbit")||coinList.get(getPosition()).getExchange().equals("bithumb")){
                         Intent intent = new Intent(context, ChartActivity.class);
-                        intent.putExtra("exchange",coinList.get(getPosition()).second.getExchange());
-                        intent.putExtra("symbol",coinList.get(getPosition()).second.getSymbol()+"KRW");
+                        intent.putExtra("exchange",coinList.get(getPosition()).getExchange());
+                        intent.putExtra("symbol",coinList.get(getPosition()).getSymbol()+"KRW");
                         intent.putExtra("theme", ThemeUtil.NOW_MODE);
                         context.startActivity(intent);
                     }
@@ -281,12 +279,7 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
 
     }
 
-    public void Add(HashMap<String,Coin> coin) {
-//            this.jsonArray = jsonArray;
-        this.coinHashMap = coin;
-//            notifyDataSetChanged();
-    }
-    private String MakePriceFormat(double price){
+    private String makePriceFormat(double price){
         String tmp;
 //        Log.v("double", String.valueOf(price));
         BigDecimal bigDecimal = new BigDecimal(price);
@@ -294,8 +287,10 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
         if(price>100){
           tmp = df.format(bigDecimal);
         }else if(1>price){
-            tmp = String.format("%.4f",bigDecimal);
+            tmp = String.format("%.5f",bigDecimal);
         }else if(10>price){
+            tmp = String.format("%.3f",bigDecimal);
+        }else if(100>price){
             tmp = String.format("%.2f",bigDecimal);
         }else{
             tmp = String.format("%.1f",bigDecimal);

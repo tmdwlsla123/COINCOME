@@ -17,8 +17,7 @@ public class ChartActivity extends AppCompatActivity {
         String exchange = intent.getStringExtra("exchange");
         String symbol = intent.getStringExtra("symbol");
         String theme = intent.getStringExtra("theme");
-        Log.v("exchange",exchange);
-        Log.v("symbol",symbol);
+
         webView = findViewById(R.id.webview);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setVerticalScrollBarEnabled(false);

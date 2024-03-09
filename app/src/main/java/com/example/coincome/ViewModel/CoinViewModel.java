@@ -27,14 +27,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CoinViewModel extends AndroidViewModel {
     private CoinRepository coin;
     private DatabaseDao databaseDao;
     private RoomDB roomDB;
-    public LiveData<HashMap<String,Coin>> liveData;
+    public LiveData<List<Coin>> liveData;
     public MutableLiveData<String> searchQuery =  new MutableLiveData<>();
-    public MutableLiveData<HashMap<String,Coin>> searchData = new MutableLiveData<>();
+    public MutableLiveData<List<Coin>> searchData = new MutableLiveData<>();
 
 
     public CoinViewModel(@NonNull Application application){
@@ -44,24 +45,24 @@ public class CoinViewModel extends AndroidViewModel {
         databaseDao = roomDB.DatabaseDao();
     }
 
-    public LiveData<HashMap<String,Coin>> getListliveData(){
+    public LiveData<List<Coin>> getListliveData(){
 
 
         return coin.getListliveData();
 
     }
-    public LiveData<HashMap<String,Coin>> getSearchliveData(LiveData<HashMap<String,Coin>> coinlist){
+    public LiveData<List<Coin>> getSearchliveData(LiveData<List<Coin>> coinlist){
 
             liveData = Transformations.switchMap(searchQuery,string -> {
 
 
 
                 if ((string == null || string.equals(""))&&coin.favFlag==0){
-                    Log.v("coinrepoviewmodle","생성안됨");
+
                     if(string.equals("")) onlySearchData(string);
                     return coinlist;
                 }else{
-                    Log.v("coinrepoviewmodle",string);
+
                     onlySearchData(string);
                     return searchData;
                 }

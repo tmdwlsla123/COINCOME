@@ -39,6 +39,7 @@ public class Exchange {
 
         //심볼 추가
         public void AddUpbitList(JSONArray jsonArray,JSONArray exchange){
+//        retrofit2 통신 이후 cd, cn으로 jsonobject를 만들어 깡통 리사이클러뷰 리스트를 만든다
             try {
                 for(int i = 0; i < jsonArray.length(); i++){
                     JSONObject jsonObject =  jsonArray.getJSONObject(i);
