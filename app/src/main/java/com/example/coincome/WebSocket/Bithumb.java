@@ -42,7 +42,7 @@ public class Bithumb {
 //            Log.v("bithumb","symbol : "+jsonObject1.getString("symbol"));
 
 
-            coinRepo.updateList(coin);
+            coinRepo.updateList(coin.getMarket(),coin);
 
         } catch (JSONException e) {
 //            e.printStackTrace();

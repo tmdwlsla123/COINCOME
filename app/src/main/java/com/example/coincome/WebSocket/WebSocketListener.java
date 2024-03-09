@@ -37,7 +37,7 @@ public class WebSocketListener extends okhttp3.WebSocketListener {
     Korbit korbit;
     Exchange exchange;
     StringBuilder str;
-
+    private StringBuilder proxyStr;
     Context context;
     CoinRepository coinRepo;
     ArrayList arrayList;
@@ -89,7 +89,7 @@ public enum WebsocketType{
                      coin.setExchange("upbit");
                      coin.setChecked(RoomDB.getDatabase(context).DatabaseDao().favoriteExist(array[1],"upbit"));
 //                     coin.setTradeVolume(exchange.upbitMarket.getJSONObject(i).getDouble("atp24h"));
-                     coinRepo.add(coin);
+                     coinRepo.add(coin.getMarket(),coin);
                      //
                  } catch (JSONException e) {
                      e.printStackTrace();
@@ -130,7 +130,7 @@ public enum WebsocketType{
                      coin.setCoinDaytoday(daytoday*multiply);
                      coin.setTradeVolume(exchange.bithumbMarket.getJSONObject(i).getDouble("trade_volume"));
                      Log.v("bithumb",exchange.bithumbMarket.getJSONObject(i).getString("symbol").replace("_","-"));
-                     coinRepo.add(coin);
+                     coinRepo.add(coin.getMarket(),coin);
 
                  } catch (JSONException e) {
                      e.printStackTrace();
@@ -159,7 +159,7 @@ public enum WebsocketType{
                      }
                      double daytoday = exchange.korbitMarket.getJSONObject(i).getDouble("changePrice")/(coin.getCoinPrice()-exchange.korbitMarket.getJSONObject(i).getDouble("changePrice"));
                      coin.setCoinDaytoday(daytoday*multiply);
-                     coinRepo.add(coin);
+                     coinRepo.add(coin.getMarket(),coin);
                  } catch (JSONException e) {
                      e.printStackTrace();
                  }
@@ -182,6 +182,9 @@ public enum WebsocketType{
     public void onOpen(WebSocket webSocket, Response response) {
 
         marketList(exchangeName);
+        //리팩토리 중 체크
+        if(proxyStr != null) str = proxyStr;
+
         Log.v("socket", "str : "+exchangeName);
         Log.v("socket", "str : "+str);
         Log.v("socket", "str : "+response);
@@ -214,7 +217,7 @@ public enum WebsocketType{
         if(exchangeName.equals("바이낸스")){
 
             binance.getBinanceData(text,coinRepo);
-//                    Log.d("Socket","Receiving :"+ text);
+//                    Log.d("binance Socket","Receiving :"+ text);
         }else if(exchangeName.equals("빗썸")){
             bithumb.getBithumbData(text,coinRepo);
 //                    Log.d("Socket","Receiving :"+ text);
@@ -230,7 +233,8 @@ public enum WebsocketType{
     public void onMessage(WebSocket webSocket, ByteString bytes) {
         isConnected =true;
         upbit.getUpbitData(bytes,coinRepo);
-//        Log.d("Socket","Receiving ByteString:"+ bytes);
+        //수신받고 있었ㅇ므...
+        Log.d("Socket","Receiving ByteString:"+ bytes);
     }
 
     @Override
@@ -254,6 +258,12 @@ public enum WebsocketType{
         isConnected = false;
     }
 
+    public StringBuilder getProxyStr() {
+        return proxyStr;
+    }
 
+    public void setProxyStr(StringBuilder proxyStr) {
+        this.proxyStr = proxyStr;
+    }
 
 }

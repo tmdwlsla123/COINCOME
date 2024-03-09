@@ -32,9 +32,9 @@ public class CoinViewModel extends AndroidViewModel {
     private CoinRepository coin;
     private DatabaseDao databaseDao;
     private RoomDB roomDB;
-    public LiveData<List<Coin>> liveData;
+    public LiveData<HashMap<String,Coin>> liveData;
     public MutableLiveData<String> searchQuery =  new MutableLiveData<>();
-    public MutableLiveData<List<Coin>> searchData = new MutableLiveData<>();
+    public MutableLiveData<HashMap<String,Coin>> searchData = new MutableLiveData<>();
 
 
     public CoinViewModel(@NonNull Application application){
@@ -44,13 +44,13 @@ public class CoinViewModel extends AndroidViewModel {
         databaseDao = roomDB.DatabaseDao();
     }
 
-    public LiveData<List<Coin>> getListliveData(){
+    public LiveData<HashMap<String,Coin>> getListliveData(){
 
 
         return coin.getListliveData();
 
     }
-    public LiveData<List<Coin>> getSearchliveData(LiveData<List<Coin>> coinlist){
+    public LiveData<HashMap<String,Coin>> getSearchliveData(LiveData<HashMap<String,Coin>> coinlist){
 
             liveData = Transformations.switchMap(searchQuery,string -> {
 

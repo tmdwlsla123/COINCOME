@@ -1,9 +1,11 @@
 package com.example.coincome.Retrofit2;
 
 
+import com.example.coincome.CoinSymbol.CoinAPIInterface;
 import com.example.coincome.Paging.NoticeModel;
 
 import java.util.HashMap;
+import java.util.List;
 
 import io.reactivex.rxjava3.core.Single;
 import okhttp3.MultipartBody;
@@ -44,8 +46,9 @@ public interface ApiInterface {
     @GET("http://118.67.142.47/notice.py")
     Single<NoticeModel> requestGetNotice(@Query("page") Integer page,@Query("size") String size);
 
-
-
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @GET()
+    Call<List<CoinAPIInterface>> requestGetCoinSymbol(@Url String restApiUri);
 }
 //    get 방식
 //    public void requestGet() {

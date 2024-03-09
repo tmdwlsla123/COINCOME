@@ -240,7 +240,7 @@ public class Exchange {
                     coin.setExchange("coinone");
                     jsonObject1.put("overseas",coinName+"usdt@trade");
 //                    coin.setChecked(RoomDB.getDatabase(context).DatabaseDao().favoriteExist(coinName.toUpperCase(),"coinone"));
-                    CoinRepository.getInstance().add(coin);
+                    CoinRepository.getInstance().add(coin.getMarket(),coin);
                     binanceMarket.put(jsonObject1);
                     }
 
@@ -282,7 +282,7 @@ public class Exchange {
                         coin.setCoinChange(change);
                         coin.setExchange("coinone");
                         coin.setMarket(coinName);
-                        CoinRepository.getInstance().updateList(coin);
+                        CoinRepository.getInstance().updateList(coin.getCoinName(),coin);
                     }
 
                 }

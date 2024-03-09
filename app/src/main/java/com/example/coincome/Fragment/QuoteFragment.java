@@ -2,7 +2,6 @@ package com.example.coincome.Fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.ClipDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,12 +10,10 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,40 +21,30 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
+import com.example.coincome.CoinSymbol.CoinAPIInterface;
+import com.example.coincome.CoinSymbol.CoinParse;
 import com.example.coincome.Exchange.Exchange;
 import com.example.coincome.Implements.ScrollListener;
 
 import com.example.coincome.Implements.setOnClickListener;
 import com.example.coincome.R;
-import com.example.coincome.RecyclerView.Coin;
 import com.example.coincome.RecyclerView.QuoteAdapter;
 import com.example.coincome.Retrofit2.ApiInterface;
 import com.example.coincome.Retrofit2.HttpClient;
 
-import com.example.coincome.Room.Favorite;
-import com.example.coincome.Room.RoomDB;
 import com.example.coincome.ViewModel.CoinRepository;
 import com.example.coincome.ViewModel.CoinViewModel;
 import com.example.coincome.WebSocket.WebSocketListener;
-import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
-import com.llollox.androidtoggleswitch.widgets.ToggleSwitchButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -65,6 +52,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class QuoteFragment extends Fragment {
@@ -87,7 +75,7 @@ public class QuoteFragment extends Fragment {
     String upbitRESTApiUri = "https://api.upbit.com/v1/market/all";
     String upbitSocketUri = "wss://api.upbit.com/websocket/v1";
 
-    String bithumbRESTApiUri = "https://api.bithumb.com/public/ticker/all/krw";
+    String bithumbRESTApiUri = "https://api.bithumb.com/public/ticker/all_krw";
     String bithumbSocketUri = "wss://pubwss.bithumb.com/pub/ws";
 
     String coinoneRESTApiUri = "https://api.coinone.co.kr/ticker_utc?currency=ALL";
@@ -98,7 +86,7 @@ public class QuoteFragment extends Fragment {
     String korbitSocketUri = "wss://ws.korbit.co.kr/v1/user/push";
 
     String binanceSocketUri = "wss://stream.binance.com:9443/ws";
-    String exchangeUSDKRW = "https://exchange.jaeheon.kr:23490/query/USDKRW";
+    String exchangeUSDKRW = "https://www.koreaexim.go.kr/site/program/financial/exchangeJSON";
     CoinViewModel viewModel;
 
     TextView usdkrw;
@@ -208,7 +196,8 @@ public class QuoteFragment extends Fragment {
 
 
                         if(adapterView.getItemAtPosition(i).equals("업비트"))  {
-                            requestGet(upbitSocketUri,upbitRESTApiUri,adapterView.getItemAtPosition(i).toString());
+//                            requestGet(upbitSocketUri,upbitRESTApiUri,adapterView.getItemAtPosition(i).toString());
+                            requestGetCoinSymbol(upbitSocketUri,upbitRESTApiUri,adapterView.getItemAtPosition(i).toString());
                         }else if(adapterView.getItemAtPosition(i).equals("빗썸")){
                             requestGet(bithumbSocketUri,bithumbRESTApiUri,adapterView.getItemAtPosition(i).toString());
                         }else if(adapterView.getItemAtPosition(i).equals("코빗")){
@@ -313,6 +302,53 @@ public class QuoteFragment extends Fragment {
         Log.v("호출","onDestroy");
     }
 
+    // API 응답 처리 후 필터링과 객체 생성
+//    public List<UpbitSymbol> createFilteredUserList(List<CoinSymbolInterface> responses) {
+//        return responses.stream()
+//                .filter(response -> response.getMarket().startsWith("KRW")) // 필터링 조건
+//                .map(response -> new UpbitSymbol(response.getMarket(), response.getKorean_name(),response.getEnglish_name())) // User 객체 생성
+//                .collect(Collectors.toList());
+//    }
+        public void requestGetCoinSymbol(String webSocketUrl,String restApiUri,String exchangeName){
+            api = HttpClient.getRetrofit().create( ApiInterface.class );
+            Call<List<CoinAPIInterface>> call = api.requestGetCoinSymbol(restApiUri);
+            Log.v("retrofit2", "requestGetCoinSymbol Start!");
+            call.enqueue(new Callback<List<CoinAPIInterface>>() {
+                @Override
+                public void onResponse(Call<List<CoinAPIInterface>> call, Response<List<CoinAPIInterface>> response) {
+                    Log.v("retrofit2", "REST API 국내 :"+response.body().get(0));
+                    List<CoinAPIInterface> list = response.body();
+                    CoinParse coinParse = new CoinParse(list,exchangeName);
+                    Log.v("retrofit2", "REST API 국내 :"+coinParse.getSubscribeSymbols());
+
+
+//                    //국내거래소
+//                    listener = new WebSocketListener(exchange,context,exchangeName);
+                    domesticListener = WebSocketListener.getInstance(exchange,context, WebSocketListener.WebsocketType.domestic);
+                    domesticListener.addExchangeName(exchangeName,exchange);
+                    domesticListener.setProxyStr(coinParse.getSubscribeSymbols());
+                    request = new Request.Builder()
+                            .url(webSocketUrl)
+                            .build();
+                    client.newWebSocket(request, domesticListener);
+
+//                    //해외거래소 웹소켓
+//                    request = new Request.Builder()
+//                            .url(binanceSocketUri)
+//                            .build();
+////                    listener1 = new WebSocketListener(exchange,context,"바이낸스");
+//                    overseasListener = WebSocketListener.getInstance(exchange,context, WebSocketListener.WebsocketType.overseas);
+//                    overseasListener.addExchangeName("바이낸스",exchange);
+//                    client.newWebSocket(request, overseasListener);
+
+                }
+
+                @Override
+                public void onFailure(Call<List<CoinAPIInterface>> call, Throwable t) {
+                    Log.v("retrofit2", "REST API 실패 :"+t);
+                }
+            });
+        }
         public void requestGet(String webSocketUrl,String restApiUri,String exchangeName) {
 //        String url = "all"; //ex) 요청하고자 하는 주소가 http://10.0.2.2/login 이면 String url = login 형식으로 적으면 됨
         api = HttpClient.getRetrofit().create( ApiInterface.class );
@@ -419,7 +455,10 @@ public class QuoteFragment extends Fragment {
     public void requestGetUSDKRW() {
         String url = "all"; //ex) 요청하고자 하는 주소가 http://10.0.2.2/login 이면 String url = login 형식으로 적으면 됨
         api = HttpClient.getRetrofit().create( ApiInterface.class );
-        Call<String> call = api.requestGet(exchangeUSDKRW);
+        String authKey = "JM8zOPzqZ6V9EZ8BLzSeXXcbwQFcCkcM";
+        String apiType = "AP01";
+        String searchDate = "2024-03-08";
+        Call<String> call = api.requestGet(exchangeUSDKRW+"?authkey="+authKey+"&data="+apiType+"&searchdate="+searchDate);
 
         // 비동기로 백그라운드 쓰레드로 동작
         call.enqueue(new Callback<String>() {
@@ -427,13 +466,18 @@ public class QuoteFragment extends Fragment {
             @Override
             public void onResponse(Call<String> call, retrofit2.Response<String> response) {
                 //     서버에서 넘겨주는 데이터는 response.body()로 접근하면 확인가능
-                Log.v("retrofit2",String.valueOf("error : "+response.body()));
+                Log.v("retrofit2",String.valueOf("requestGetUSDKRW : "+response.body()));
                 try {
-                    JSONObject jsonObject = new JSONObject(response.body());
-                    JSONArray jsonArray = jsonObject.getJSONArray("USDKRW");
-                    usdkrw.setText(jsonArray.getString(0)+"원");
-                    CoinRepository.getInstance().setUsdkrw(jsonArray.getDouble(0));
-                    Log.v("retrofit2", String.valueOf(jsonArray.get(0)));
+                    JSONArray jsonArray = new JSONArray(response.body());
+                    for(int i = 0; i < jsonArray.length(); i++){
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String curUnit = jsonObject.getString("cur_unit");
+                        if(curUnit.equals("USD")){
+                            String kftc_bkpr = jsonObject.getString("kftc_bkpr");
+                            usdkrw.setText(kftc_bkpr+"원");
+                            CoinRepository.getInstance().setUsdkrw(Double.parseDouble(kftc_bkpr.replaceAll(",","")));
+                        }
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -443,7 +487,7 @@ public class QuoteFragment extends Fragment {
             // 통신실패
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.v("retrofit2",String.valueOf("error : "+t.toString()));
+                Log.v("retrofit2",String.valueOf("requestGetUSDKRW error : "+t.toString()));
             }
         });
 

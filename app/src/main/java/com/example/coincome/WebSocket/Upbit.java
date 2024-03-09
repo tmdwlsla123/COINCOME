@@ -35,7 +35,7 @@ public class Upbit {
                 String[] array = jsonObject.getString("cd").split("-");
                 coin.setMarket(array[1]+"-"+array[0]);
 
-                coinRepo.updateList(coin);
+                coinRepo.updateList(coin.getMarket(),coin);
 
             } catch (JSONException e) {
                 e.printStackTrace();

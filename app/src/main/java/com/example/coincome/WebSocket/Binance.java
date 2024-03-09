@@ -21,7 +21,7 @@ public class Binance {
             coin.setMarket(jsonObject.getString("s").substring(0,symbol)+"-KRW");
             coin.setCoinOverseasPrice(jsonObject.getDouble("p"));
 
-            coinRepo.updateOverseasList(coin);
+            coinRepo.updateOverseasList(coin.getMarket(),coin);
 
 
         } catch (JSONException e) {

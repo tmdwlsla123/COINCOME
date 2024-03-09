@@ -27,13 +27,13 @@ public class CoinRepository {
     private static CoinRepository instance = new CoinRepository();
 
 
-    private MutableLiveData<List<Coin>> listliveData = new MutableLiveData<>();
-    private MutableLiveData<List<Coin>> searchliveData = new MutableLiveData<>();
+    private MutableLiveData<HashMap<String,Coin>> listliveData = new MutableLiveData<>();
+    private MutableLiveData<HashMap<String,Coin>> searchliveData = new MutableLiveData<>();
     public int favFlag;
 
 
 
-    private List<Coin> list = new ArrayList<>();
+    private HashMap<String,Coin> list = new HashMap<>();
     private String s;
     private int flag;
     public int getFlag() {
@@ -62,25 +62,26 @@ public class CoinRepository {
     }
 
     private Double usdkrw;
-    public void add(Coin coin){
-        list.add(coin);
+    public void add(String key, Coin coin){
+        list.put(key,coin);
     }
     public void remove(Coin coin){
         list.remove(coin);
     }
-    public List<Coin> getAllList(){
+    public HashMap<String,Coin> getAllList(){
         return list;
     }
-    public void updateList(Coin coin) {
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getMarket().equals(coin.getMarket())) {
-                list.get(i).setCoinPrice(coin.getCoinPrice());
-                list.get(i).setCoinDaytoday(coin.getCoinDaytoday());
-                list.get(i).setCoinChange(coin.getCoinChange());
-                list.get(i).setTradeVolume(coin.getTradeVolume());
-                break;
-            }
-        }
+    public void updateList(String key,Coin coin) {
+//        for (int i = 0; i < list.size(); i++) {
+//            if (list.get(i).getMarket().equals(coin.getMarket())) {
+//                list.get(i).setCoinPrice(coin.getCoinPrice());
+//                list.get(i).setCoinDaytoday(coin.getCoinDaytoday());
+//                list.get(i).setCoinChange(coin.getCoinChange());
+//                list.get(i).setTradeVolume(coin.getTradeVolume());
+//                break;
+//            }
+//        }
+        list.put(key,coin);
 
 
 //        if(s!=null){
@@ -93,15 +94,16 @@ public class CoinRepository {
 //        }
         //정렬
         try {
+            List<Coin> valueList = new ArrayList<>(list.values());
             if(flag==0){
                 //이름
-                Collections.sort(list, new SortArrayList().new NameSortArrayList(index){});
+                Collections.sort(valueList, new SortArrayList().new NameSortArrayList(index){});
             }else if(flag==1){
                 //가격
-                Collections.sort(list, new SortArrayList().new PriceSortArrayList(index){});
+                Collections.sort(valueList, new SortArrayList().new PriceSortArrayList(index){});
             }else if(flag==2){
                 //전일대비
-                Collections.sort(list, new SortArrayList().new DaytodaySortArrayList(index){});
+                Collections.sort(valueList, new SortArrayList().new DaytodaySortArrayList(index){});
             }
 
         }catch (Exception e){
@@ -110,32 +112,32 @@ public class CoinRepository {
 
         //검색 데이터 + 관심상태
         if((!s.equals("") && s !=null) && favFlag==1){
-            List<Coin> coinlist = new ArrayList<>();
+            HashMap<String,Coin> coinlist = new HashMap<>();
             for(int i = 0; i< list.size(); i++) {
                 //검색+즐찾
                 if ((list.get(i).getCoinName().contains(s) || list.get(i).getSymbol().contains(s.toUpperCase())) && list.get(i).isChecked()) {
-                    coinlist.add(list.get(i));
+                    coinlist.put(key,list.get(i));
                 }
 
             }
             searchliveData.postValue(coinlist);
             //검색만
         }else if((!s.equals("") && s !=null) && favFlag==0){
-            List<Coin> coinlist = new ArrayList<>();
+            HashMap<String,Coin> coinlist = new HashMap<>();
             for(int i = 0; i< list.size(); i++) {
                 //검색
                 if (list.get(i).getCoinName().contains(s) || list.get(i).getSymbol().contains(s.toUpperCase())) {
-                    coinlist.add(list.get(i));
+                    coinlist.put(key,list.get(i));
                 }
 
             }
             searchliveData.postValue(coinlist);
         }else if((s.equals("") || s ==null) && favFlag==1){
-            List<Coin> coinlist = new ArrayList<>();
+            HashMap<String,Coin> coinlist = new HashMap<>();
             for(int i = 0; i< list.size(); i++) {
                 //검색
                 if (list.get(i).isChecked()) {
-                    coinlist.add(list.get(i));
+                    coinlist.put(key,list.get(i));
                 }
 
             }
@@ -150,23 +152,24 @@ public class CoinRepository {
 
     }
     //해외거래소 시세
-    public void updateOverseasList(Coin coin){
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getMarket().equals(coin.getMarket())) {
-                list.get(i).setCoinOverseasPrice(coin.getCoinOverseasPrice());
-                if(list.get(i).getCoinPrice()!=null&&getUsdkrw()!=null&&coin.getCoinOverseasPrice()!=null){
-                    double kimpPrice =  (list.get(i).getCoinPrice()-CoinRepository.getInstance().getUsdkrw()*coin.getCoinOverseasPrice());
-                    double kimpPercent = kimpPrice/(list.get(i).getCoinPrice()-kimpPrice)*100;
-                list.get(i).setCoinPremium(kimpPercent);
-                }
-                break;
-            }
-        }
-
+    public void updateOverseasList(String key,Coin coin){
+//        for (int i = 0; i < list.size(); i++) {
+//            if (list.get(i).getMarket().equals(coin.getMarket())) {
+//                list.get(i).setCoinOverseasPrice(coin.getCoinOverseasPrice());
+//                if(list.get(i).getCoinPrice()!=null&&getUsdkrw()!=null&&coin.getCoinOverseasPrice()!=null){
+//                    double kimpPrice =  (list.get(i).getCoinPrice()-CoinRepository.getInstance().getUsdkrw()*coin.getCoinOverseasPrice());
+//                    double kimpPercent = kimpPrice/(list.get(i).getCoinPrice()-kimpPrice)*100;
+//                list.get(i).setCoinPremium(kimpPercent);
+//                }
+//                break;
+//            }
+//        }
+        list.put(key,coin);
+        List<Coin> valueList = new ArrayList<>(list.values());
         if(flag==3){
             //김프
             try {
-                Collections.sort(list, new SortArrayList().new PremiumSortArrayList(index){});
+                Collections.sort(valueList, new SortArrayList().new PremiumSortArrayList(index){});
 
             }catch (Exception e){
                 e.printStackTrace();
@@ -177,14 +180,14 @@ public class CoinRepository {
     }
 
 
-    public MutableLiveData<List<Coin>> getListliveData() {
+    public MutableLiveData<HashMap<String,Coin>> getListliveData() {
         return listliveData;
     }
 
-    public void setListliveData(MutableLiveData<List<Coin>> listliveData) {
+    public void setListliveData(MutableLiveData<HashMap<String,Coin>> listliveData) {
         this.listliveData = listliveData;
     }
-    public MutableLiveData<List<Coin>> getListOfSearchLiveData(String s){
+    public MutableLiveData<HashMap<String,Coin>> getListOfSearchLiveData(String s){
         this.s = s;
         return searchliveData;
     }

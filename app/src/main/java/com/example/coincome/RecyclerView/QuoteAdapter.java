@@ -8,6 +8,7 @@ import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +44,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -50,7 +52,8 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
     Context context;
 
     final AsyncListDiffer<Coin> differ  = new AsyncListDiffer<Coin>(this,DIFF_CALLBACK);
-    List<Coin> coinlist;
+    private HashMap<String,Coin> coinHashMap = new HashMap<>();
+    private List<Pair<String,Coin>> coinList;
 
 
     public static final DiffUtil.ItemCallback<Coin> DIFF_CALLBACK
@@ -81,15 +84,22 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
         }
     };
 
-    public void updateQouteAdapter(List<Coin> coinlist) {
+    public void updateQouteAdapter(HashMap<String,Coin> coinHashMap) {
+        Log.v("null 참조",coinHashMap.toString());
+        Log.v("null 참조",this.coinHashMap.toString());
+        this.coinHashMap.putAll(coinHashMap);
+        coinList = new ArrayList<>(coinHashMap.size());
+        coinHashMap.forEach((s,s2) -> coinList.add(new Pair<>(s,s2)));
 
-        final CoinDiffCallback diffCallback = new CoinDiffCallback(this.coinlist, coinlist);
+        final CoinDiffCallback diffCallback = new CoinDiffCallback(this.coinList, coinList);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
-        this.coinlist.clear();
-        this.coinlist.addAll(coinlist);
+
+
+
+
         diffResult.dispatchUpdatesTo(QuoteAdapter.this);
-//        differ.submitList(coinlist);
+//        differ.submitList(coinList);
 
 //
 
@@ -114,7 +124,7 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
 
             super.onBindViewHolder(holder, position, payloads);
 
-                    final Coin coin = coinlist.get(position);
+                    final Coin coin = coinList.get(position).second;
 //            final Coin coin = differ.getCurrentList().get(position);
             try {
                 if(coin.getCoinPrice()!=null){
@@ -220,14 +230,14 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
     @Override
     public int getItemCount() {
 //        return differ.getCurrentList().size();
-        return coinlist.size();
+        return coinList.size();
     }
 
     public QuoteAdapter(Context context) {
         this.context = context;
 
 
-        coinlist = new ArrayList<>();
+        coinList = new ArrayList<>();
 //        notifyDataSetChanged();
 
     }
@@ -258,10 +268,10 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
             chart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(coinlist.get(getPosition()).getExchange().equals("upbit")||coinlist.get(getPosition()).getExchange().equals("bithumb")){
+                    if(coinList.get(getPosition()).second.getExchange().equals("upbit")||coinList.get(getPosition()).second.getExchange().equals("bithumb")){
                         Intent intent = new Intent(context, ChartActivity.class);
-                        intent.putExtra("exchange",coinlist.get(getPosition()).getExchange());
-                        intent.putExtra("symbol",coinlist.get(getPosition()).getSymbol()+"KRW");
+                        intent.putExtra("exchange",coinList.get(getPosition()).second.getExchange());
+                        intent.putExtra("symbol",coinList.get(getPosition()).second.getSymbol()+"KRW");
                         intent.putExtra("theme", ThemeUtil.NOW_MODE);
                         context.startActivity(intent);
                     }
@@ -271,9 +281,9 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.ViewHolder>{
 
     }
 
-    public void Add(List<Coin> coin) {
+    public void Add(HashMap<String,Coin> coin) {
 //            this.jsonArray = jsonArray;
-        this.coinlist = coin;
+        this.coinHashMap = coin;
 //            notifyDataSetChanged();
     }
     private String MakePriceFormat(double price){

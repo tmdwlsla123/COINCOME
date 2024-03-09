@@ -46,7 +46,7 @@ public class Korbit {
 
             coin.setCoinChange(change);
 
-            coinRepo.updateList(coin);
+            coinRepo.updateList(coin.getMarket(),coin);
 
         } catch (JSONException e) {
             e.printStackTrace();
